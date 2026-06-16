@@ -93,6 +93,9 @@ GEM
     brakeman (8.0.5)
       racc
     builder (3.3.0)
+    bundler-audit (0.9.3)
+      bundler (>= 1.2.0)
+      thor (~> 1.0)
     childprocess (5.1.0)
       logger (~> 1.5)
     concurrent-ruby (1.3.6)
@@ -466,6 +469,7 @@ DEPENDENCIES
   bcrypt (~> 3.1.7)
   bootsnap
   brakeman
+  bundler-audit
   csv
   debug
   devise
