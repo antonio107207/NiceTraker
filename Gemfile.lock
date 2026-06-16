@@ -232,7 +232,7 @@ GEM
       racc (~> 1.4)
     nokogiri (1.19.3-x86_64-linux-musl)
       racc (~> 1.4)
-    noticed (2.9.3)
+    noticed (3.0.0)
       rails (>= 6.1.0)
     oauth2 (2.0.23)
       auth-sanitizer (~> 0.2, >= 0.2.1)
@@ -491,7 +491,7 @@ DEPENDENCIES
   jbuilder
   kamal
   letter_opener
-  noticed (~> 2.0)
+  noticed (~> 3.0)
   omniauth-github
   omniauth-gitlab
   omniauth-google-oauth2

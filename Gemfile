@@ -25,7 +25,7 @@ gem "pundit"
 gem "acts_as_list"
 
 # Notifications
-gem "noticed", "~> 2.0"
+gem "noticed", "~> 3.0"
 
 # Search
 gem "pg_search"
