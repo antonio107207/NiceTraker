@@ -8,7 +8,7 @@ class CardRelationsController < ApplicationController
     @results = []
 
     if q.length >= 2
-      excluded = @card.card_relations.pluck(:related_card_id) + [@card.id]
+      excluded = @card.card_relations.pluck(:related_card_id) + [ @card.id ]
       base = accessible_cards.where.not(id: excluded)
 
       @results = if q =~ /\A[A-Za-z0-9]+-\d+\z/

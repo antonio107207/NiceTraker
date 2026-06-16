@@ -4,7 +4,7 @@ class BoardsController < ApplicationController
 
   def show
     authorize @board
-    @lists               = @board.lists.includes(cards: [:labels, :members, :checklists])
+    @lists               = @board.lists.includes(cards: [ :labels, :members, :checklists ])
     @labels              = @board.labels
     @board_members       = @board.members
     @pending_invitations = @board.invitations.active
@@ -30,11 +30,15 @@ class BoardsController < ApplicationController
   end
 
   def edit
+    @workspace = @board.workspace
     authorize @board
   end
 
   def update
     authorize @board
+    if params.dig(:board, :remove_background_image) == "1"
+      @board.background_image.purge if @board.background_image.attached?
+    end
     if @board.update(board_params)
       redirect_to board_path(@board), notice: t("flash.board_updated")
     else
@@ -86,6 +90,6 @@ class BoardsController < ApplicationController
   end
 
   def board_params
-    params.require(:board).permit(:name, :background_color, :visibility)
+    params.require(:board).permit(:name, :background_color, :visibility, :background_image)
   end
 end

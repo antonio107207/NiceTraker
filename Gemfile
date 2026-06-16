@@ -24,14 +24,11 @@ gem "pundit"
 # Ordering (lists, cards)
 gem "acts_as_list"
 
-# Notifications
-gem "noticed", "~> 2.0"
-
 # Search
 gem "pg_search"
 
-# Rich text attachments
-gem "image_processing", "~> 1.2"
+# Rich text attachments (image variants via libvips)
+gem "image_processing", "~> 2.0"
 
 # Rails 8 built-in backends
 gem "solid_cache"

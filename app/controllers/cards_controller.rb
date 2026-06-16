@@ -15,7 +15,7 @@ class CardsController < ApplicationController
 
     unless turbo_frame_request?
       # Direct page load: render board with card modal pre-opened
-      @lists               = @board.lists.includes(cards: [:labels, :members, :checklists])
+      @lists               = @board.lists.includes(cards: [ :labels, :members, :checklists ])
       @pending_invitations = @board.invitations.active
       @open_card           = @card
       render "boards/show"

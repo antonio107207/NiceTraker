@@ -3,7 +3,7 @@
 <%= turbo_frame_tag "card_modal", src: @open_card ? board_card_path(@open_card.board_id, @open_card) : nil %>
 
 <div class="flex flex-col min-h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-3.5rem)]"
-     style="background-color: <%= @board.background_color.presence || '#6366f1' %>"
+     style="<%= board_background_style(@board) %>"
      data-board-url="<%= board_path(@board) %>">
 
   <%# Board header %>

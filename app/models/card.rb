@@ -64,7 +64,7 @@ class Card < ApplicationRecord
     items = checklists.joins(:checklist_items).includes(:checklist_items)
     total = items.sum { |c| c.checklist_items.size }
     done  = items.sum { |c| c.checklist_items.count(&:completed?) }
-    return [0, 0] if total.zero?
+    return [ 0, 0 ] if total.zero?
     [ done, total ]
   end
 

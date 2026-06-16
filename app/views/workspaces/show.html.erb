@@ -54,7 +54,7 @@
         <%= link_to board_path(board),
               class: "group block rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow" do %>
           <div class="h-20 flex items-end p-3"
-               style="background-color: <%= board.background_color.presence || '#6366f1' %>">
+               style="<%= board_background_style(board) %>">
           </div>
           <div class="bg-white px-4 py-3 border border-t-0 border-gray-200 rounded-b-xl">
             <p class="font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors truncate">

@@ -8,6 +8,7 @@ class Board < ApplicationRecord
   has_many :labels, dependent: :destroy
   has_many :invitations, dependent: :destroy
   has_many :activities, dependent: :destroy
+  has_one_attached :background_image
 
   enum :visibility, { private_board: 0, workspace: 1, public_board: 2 }, default: :workspace
 

@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "../stylesheets/actiontext.css";
 
+/* Safelist: classes used in bg_picker_controller.js dynamic HTML */
+@source inline("grid grid-cols-5 gap-2 p-1 w-10 h-10 rounded-lg transition-all hover:scale-110 focus:outline-none");
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
@@ -195,16 +198,44 @@ trix-editor:focus {
 .dark textarea::placeholder { color: #9ca3af; }
 
 /* ── Trix editor ─────────────────────────── */
-.dark trix-toolbar { background: #374151; border-color: #6b7280; }
-.dark trix-toolbar .trix-button { color: #d1d5db; }
-.dark trix-toolbar .trix-button.trix-active { background: #312e81; color: #a5b4fc; }
-.dark trix-toolbar .trix-button-group { border-color: #6b7280; }
-.dark trix-editor {
+.dark trix-toolbar {
   background: #1f2937;
+  border-color: #4b5563;
+}
+.dark trix-toolbar .trix-button {
+  color: #d1d5db;
+  border-bottom: none;
+}
+.dark trix-toolbar .trix-button:not(.trix-active):hover {
+  background: #374151;
+  color: #f9fafb;
+}
+.dark trix-toolbar .trix-button.trix-active {
+  background: #3730a3;
+  color: #c7d2fe;
+}
+.dark trix-toolbar .trix-button-group {
+  border-color: #4b5563;
+  background: transparent;
+}
+/* Invert dark SVG icons so they're visible on dark toolbar */
+.dark trix-toolbar .trix-button--icon::before {
+  filter: invert(0.85) brightness(1.2);
+}
+.dark trix-toolbar .trix-button--icon.trix-active::before {
+  filter: invert(1) brightness(1.4);
+}
+.dark trix-editor {
+  background: #111827;
   color: #f3f4f6;
-  border-color: #6b7280;
+  border-color: #4b5563;
+}
+.dark trix-editor:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
 }
 .dark .trix-content a { color: #818cf8; }
+.dark .trix-content pre { background: #1f2937; color: #e5e7eb; }
 
 /* ── Stat cards (reports) ────────────────── */
 .dark .bg-indigo-50  { background-color: #1e1b4b; }
@@ -221,6 +252,9 @@ trix-editor:focus {
 .dark thead.bg-gray-50,
 .dark .bg-gray-50 { background-color: #111827; }
 
+/* ── HR dividers ─────────────────────────── */
+.dark hr { border-color: #374151; }
+
 /* ── Specific component overrides ───────── */
 
 /* Board lists */
@@ -231,6 +265,30 @@ trix-editor:focus {
   background: rgba(99,102,241,.25);
   border-color: rgba(99,102,241,.5);
 }
+
+/* Card modal */
+.dark [data-modal-target="dialog"] {
+  background-color: #1f2937;
+}
+
+/* Sidebar dropdown panels inside modal */
+.dark [data-dropdown-target="menu"].bg-white,
+.dark [data-dropdown-target="menu"] {
+  background-color: #111827;
+  border-color: #374151;
+}
+
+/* File input */
+.dark input[type="file"]::file-selector-button {
+  background-color: #312e81;
+  color: #c7d2fe;
+  border: none;
+}
+
+/* Scrollbar in dark mode */
+.dark .modal-scroll::-webkit-scrollbar-track { background: #1f2937; }
+.dark .modal-scroll::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
+.dark .modal-scroll::-webkit-scrollbar-thumb:hover { background: #6b7280; }
 
 @layer utilities {
   .scrollbar-thin {

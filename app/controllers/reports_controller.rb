@@ -58,11 +58,11 @@ class ReportsController < ApplicationController
                  .where(card_memberships: { user_id: @user_id }) if @user_id
 
     scope = case @status
-            when "overdue"   then scope.where(archived_at: nil).where("due_date < ? AND due_completed = false", Time.current)
-            when "completed" then scope.where(due_completed: true)
-            when "archived"  then scope.where.not(archived_at: nil)
-            else                  scope.where(archived_at: nil)
-            end
+    when "overdue"   then scope.where(archived_at: nil).where("due_date < ? AND due_completed = false", Time.current)
+    when "completed" then scope.where(due_completed: true)
+    when "archived"  then scope.where.not(archived_at: nil)
+    else                  scope.where(archived_at: nil)
+    end
 
     @results = scope.order(created_at: :desc).limit(500)
 
@@ -74,7 +74,7 @@ class ReportsController < ApplicationController
   end
 
   def report_time
-    scope = TimeEntry.includes(:user, card: [:board, :list])
+    scope = TimeEntry.includes(:user, card: [ :board, :list ])
                      .joins(card: :board)
                      .where(boards: { id: @board_ids })
                      .where(logged_at: date_range)
@@ -160,17 +160,17 @@ class ReportsController < ApplicationController
         end
 
       when "activity"
-        csv << ["Developer", "Cards Assigned", "Cards Done", "Time Logged", "Comments"]
+        csv << [ "Developer", "Cards Assigned", "Cards Done", "Time Logged", "Comments" ]
         @results.each do |r|
-          csv << [r[:user].display_name, r[:cards_assigned], r[:cards_done],
-                  fmt_minutes(r[:time_minutes]), r[:comments]]
+          csv << [ r[:user].display_name, r[:cards_assigned], r[:cards_done],
+                  fmt_minutes(r[:time_minutes]), r[:comments] ]
         end
 
       when "boards"
         csv << %w[Board Members Total\ Cards Active Overdue Completed Time\ Logged]
         @results.each do |r|
-          csv << [r[:board].name, r[:members], r[:total], r[:active],
-                  r[:overdue], r[:done], fmt_minutes(r[:time_minutes])]
+          csv << [ r[:board].name, r[:members], r[:total], r[:active],
+                  r[:overdue], r[:done], fmt_minutes(r[:time_minutes]) ]
         end
       end
     end
@@ -181,7 +181,7 @@ class ReportsController < ApplicationController
   def fmt_minutes(min)
     return "—" if min.nil? || min.zero?
     h, m = min.to_i.divmod(60)
-    parts = [h > 0 ? "#{h}h" : nil, m > 0 ? "#{m}m" : nil].compact
+    parts = [ h > 0 ? "#{h}h" : nil, m > 0 ? "#{m}m" : nil ].compact
     parts.join(" ")
   end
 

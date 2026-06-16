@@ -1,4 +1,4 @@
 <%= link_to board_path(board), class: "block h-24 rounded-xl p-3 text-white font-semibold shadow-sm hover:shadow-md hover:brightness-110 transition-all",
-      style: "background-color: #{board.background_color.presence || '#6366f1'}" do %>
+      style: board_background_style(board) do %>
   <%= board.name %>
 <% end %>

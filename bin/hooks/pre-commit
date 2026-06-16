@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -e
+
+staged=$(git diff --name-only --cached --diff-filter=ACM | grep '\.rb$' || true)
+[ -z "$staged" ] && exit 0
+
+echo "→ RuboCop on staged Ruby files..."
+
+# Run inside Docker if the web container is up; fall back to local bundle exec
+if docker ps --format '{{.Names}}' 2>/dev/null | grep -q '^nice_tasker-web-1$'; then
+  docker exec nice_tasker-web-1 bundle exec rubocop \
+    --no-color --format simple \
+    $(echo "$staged" | sed 's|^|/rails/|')
+else
+  bundle exec rubocop --no-color --format simple $staged
+fi

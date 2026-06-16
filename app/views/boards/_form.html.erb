@@ -1,4 +1,4 @@
-<%= form_with model: [workspace, board], class: "space-y-4" do |f| %>
+<%= form_with model: [workspace, board], multipart: true, class: "space-y-5" do |f| %>
   <% if board.errors.any? %>
     <div class="rounded-lg bg-red-50 border border-red-200 p-4 text-sm text-red-700">
       <ul class="list-disc list-inside space-y-1">
@@ -14,17 +14,74 @@
     <%= f.text_field :name, class: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none", required: true %>
   </div>
 
-  <div>
-    <label class="block text-sm font-medium text-gray-700 mb-2"><%= t("boards.background_color") %></label>
-    <div class="flex gap-2 flex-wrap">
-      <% %w[#6366f1 #8b5cf6 #ec4899 #ef4444 #f97316 #eab308 #22c55e #14b8a6 #3b82f6 #1e293b].each do |color| %>
-        <label class="cursor-pointer">
-          <%= f.radio_button :background_color, color, class: "sr-only peer" %>
-          <span class="block w-10 h-10 rounded-lg border-4 border-transparent peer-checked:border-white peer-checked:ring-2 peer-checked:ring-offset-1 peer-checked:ring-gray-400 transition-all"
-                style="background-color: <%= color %>"></span>
-        </label>
-      <% end %>
+  <%# Background picker %>
+  <div data-controller="bg-picker"
+       data-has-image="<%= board.persisted? && board.background_image.attached? ? 'true' : 'false' %>">
+
+    <label class="block text-sm font-medium text-gray-700 mb-2"><%= t("boards.background") %></label>
+
+    <%# Preview strip %>
+    <% bg_style = board_background_style(board) rescue "background-color:#6366f1" %>
+    <div data-bg-picker-target="preview"
+         class="h-16 rounded-xl mb-3 transition-all"
+         style="<%= bg_style %>">
     </div>
+
+    <%# Tab switcher %>
+    <div class="flex gap-1 bg-gray-100 rounded-lg p-1 mb-3">
+      <button type="button" data-action="click->bg-picker#switchTab" data-tab="colors"
+              data-bg-picker-target="tab"
+              class="flex-1 text-xs font-medium py-1.5 px-2 rounded-md transition-all text-gray-500">
+        <%= t("boards.bg_colors") %>
+      </button>
+      <button type="button" data-action="click->bg-picker#switchTab" data-tab="gradients"
+              data-bg-picker-target="tab"
+              class="flex-1 text-xs font-medium py-1.5 px-2 rounded-md transition-all text-gray-500">
+        <%= t("boards.bg_gradients") %>
+      </button>
+      <button type="button" data-action="click->bg-picker#switchTab" data-tab="photos"
+              data-bg-picker-target="tab"
+              class="flex-1 text-xs font-medium py-1.5 px-2 rounded-md transition-all text-gray-500">
+        <%= t("boards.bg_photos") %>
+      </button>
+    </div>
+
+    <%# Colors panel %>
+    <div data-bg-picker-target="panel" data-panel="colors" class="hidden">
+      <%# Populated by JS %>
+    </div>
+
+    <%# Gradients panel %>
+    <div data-bg-picker-target="panel" data-panel="gradients" class="hidden">
+      <%# Populated by JS %>
+    </div>
+
+    <%# Photos panel %>
+    <div data-bg-picker-target="panel" data-panel="photos" class="hidden">
+      <div class="p-2 space-y-3">
+        <% if board.persisted? && board.background_image.attached? %>
+          <p class="text-xs text-gray-500"><%= t("boards.current_image") %></p>
+        <% end %>
+        <button type="button"
+                data-action="click->bg-picker#triggerUpload"
+                class="w-full flex items-center justify-center gap-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border-2 border-dashed border-indigo-300 rounded-lg py-4 text-sm font-medium transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+          <%= t("boards.upload_photo") %>
+        </button>
+        <%= f.file_field :background_image,
+              accept: "image/*",
+              class: "hidden",
+              data: { "bg-picker-target": "fileInput", action: "change->bg-picker#onFileChange" } %>
+        <p class="text-xs text-center text-gray-400"><%= t("boards.photo_hint") %></p>
+      </div>
+    </div>
+
+    <%# Hidden inputs %>
+    <%= f.hidden_field :background_color, data: { "bg-picker-target": "colorInput" } %>
+    <input type="hidden" name="board[remove_background_image]" value="0"
+           data-bg-picker-target="removeInput">
   </div>
 
   <%= f.submit board.new_record? ? t("boards.create_btn") : t("boards.save_btn"),
