@@ -1,0 +1,84 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${DB_USER:-nice_tasker}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-nice_tasker_dev}
+      POSTGRES_DB: nice_tasker_development
+    ports:
+      - "${DB_PORT:-5433}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-nice_tasker} -d nice_tasker_development"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    entrypoint: ["/rails/bin/docker-entrypoint-dev"]
+    command: ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3077"]
+    ports:
+      - "3077:3077"
+    volumes:
+      - .:/rails
+      - bundle_cache:/usr/local/bundle
+      - rails_storage:/rails/storage
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=${DB_USER:-nice_tasker}
+      - DB_PASSWORD=${DB_PASSWORD:-nice_tasker_dev}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID:-}
+      - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET:-}
+      - GITLAB_APP_ID=${GITLAB_APP_ID:-}
+      - GITLAB_APP_SECRET=${GITLAB_APP_SECRET:-}
+      - GITLAB_URL=${GITLAB_URL:-https://gitlab.com}
+      - RAILS_ENV=development
+      - RAILS_MASTER_KEY=${RAILS_MASTER_KEY:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    stdin_open: true
+    tty: true
+
+  css:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: ["/rails/bin/css-watch"]
+    volumes:
+      - .:/rails
+      - bundle_cache:/usr/local/bundle
+    environment:
+      - RAILS_ENV=development
+    depends_on:
+      - web
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: ["bundle", "exec", "rails", "solid_queue:start"]
+    volumes:
+      - .:/rails
+      - bundle_cache:/usr/local/bundle
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=${DB_USER:-nice_tasker}
+      - DB_PASSWORD=${DB_PASSWORD:-nice_tasker_dev}
+      - RAILS_ENV=development
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  bundle_cache:
+  rails_storage:

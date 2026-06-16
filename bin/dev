@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+export GEM_HOME="$HOME/.rvm/gems/ruby-3.4.9"
+export GEM_PATH="$HOME/.rvm/gems/ruby-3.4.9:$HOME/.rvm/gems/ruby-3.4.9@global"
+export RUBY="$HOME/.rvm/rubies/ruby-3.4.9/bin/ruby"
+
+exec "$RUBY" "$GEM_HOME/gems/bundler-2.6.5/exe/bundle" exec "$@"

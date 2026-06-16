@@ -1,0 +1,32 @@
+<% if @old_list_id && @old_list_id != @card.list_id %>
+  <%# Card moved to a different list — remove from old, append to new %>
+  <%= turbo_stream.remove "card_#{@card.id}" %>
+  <%= turbo_stream.append "cards_list_#{@card.list_id}" do %>
+    <%= render @card %>
+  <% end %>
+  <%# Update the "in list" label inside the open modal %>
+  <%= turbo_stream.replace "card_in_list_#{@card.id}" do %>
+    <p id="card_in_list_<%= @card.id %>" class="text-xs text-gray-400 mt-1">
+      <%= t("cards.in_list", name: @card.list.name) %>
+    </p>
+  <% end %>
+<% else %>
+  <%# Same list — just replace the card in place %>
+  <%= turbo_stream.replace "card_#{@card.id}" do %>
+    <%= render @card %>
+  <% end %>
+<% end %>
+
+<%# Always update the due date section in the open modal %>
+<%= turbo_stream.replace "card_due_date_#{@card.id}" do %>
+  <div id="card_due_date_<%= @card.id %>">
+    <% if @card.due_date.present? %>
+      <div>
+        <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1"><%= t("cards.due_date") %></h4>
+        <span class="text-sm <%= @card.due_date < Time.current && !@card.due_completed ? 'text-red-600 font-medium' : 'text-gray-700' %>">
+          <%= @card.due_date.strftime("%B %d, %Y") %>
+        </span>
+      </div>
+    <% end %>
+  </div>
+<% end %>

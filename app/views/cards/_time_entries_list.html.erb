@@ -1,0 +1,65 @@
+<% entries = card.time_entries.includes(:user) %>
+<% if entries.any? %>
+  <div class="space-y-2">
+    <% entries.each do |entry| %>
+      <div id="time_entry_<%= entry.id %>" class="group" data-controller="inline-edit">
+
+        <%# View mode %>
+        <div data-inline-edit-target="view" class="flex items-start gap-2">
+          <div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 text-xs flex items-center justify-center font-medium flex-shrink-0 mt-0.5">
+            <%= entry.user.initials %>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-baseline gap-1.5">
+              <span class="text-xs font-medium text-gray-800 tabular-nums"><%= entry.formatted %></span>
+              <span class="text-xs text-gray-400 truncate"><%= entry.user.name %></span>
+              <% if entry.user_id == current_user.id %>
+                <div class="ml-auto flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button type="button" data-action="click->inline-edit#edit"
+                          class="text-[10px] text-gray-400 hover:text-indigo-500 transition-colors">
+                    <%= t("common.edit") %>
+                  </button>
+                  <%= button_to time_entry_path(entry), method: :delete,
+                        data: { turbo_stream: true, turbo_confirm: t("time_tracking.delete_confirm") },
+                        class: "text-[10px] text-gray-400 hover:text-red-500 transition-colors bg-transparent border-0 cursor-pointer p-0" do %>✕<% end %>
+                </div>
+              <% end %>
+            </div>
+            <% if entry.description.present? %>
+              <p class="text-xs text-gray-500 truncate"><%= entry.description %></p>
+            <% end %>
+          </div>
+        </div>
+
+        <%# Edit mode (own entries only) %>
+        <% if entry.user_id == current_user.id %>
+          <div data-inline-edit-target="form" class="hidden pl-8">
+            <%= form_with url: time_entry_path(entry), method: :patch, scope: :time_entry, data: { turbo_stream: true } do |f| %>
+              <div class="flex gap-1 mb-1">
+                <%= f.text_field :duration,
+                      value: entry.formatted,
+                      placeholder: "2h, 30m…",
+                      class: "w-20 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-indigo-500 focus:outline-none" %>
+                <%= f.text_field :description,
+                      value: entry.description,
+                      placeholder: t("time_tracking.description_placeholder"),
+                      class: "flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-indigo-500 focus:outline-none" %>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <%= f.submit t("common.save"),
+                      class: "bg-indigo-600 text-white text-[10px] px-2.5 py-1 rounded hover:bg-indigo-700 cursor-pointer" %>
+                <button type="button" data-action="click->inline-edit#cancel"
+                        class="text-[10px] text-gray-400 hover:text-gray-600 transition-colors">
+                  <%= t("common.cancel") %>
+                </button>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <p class="text-xs text-gray-400 italic"><%= t("time_tracking.no_entries") %></p>
+<% end %>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html class="h-full" data-controller="theme">
+  <head>
+    <title><%= content_for(:title) || "NiceTasker" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="NiceTasker">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= yield :head %>
+    <link rel="icon" href="/icon.png" type="image/png">
+    <%# Inline script prevents flash of wrong theme before JS loads %>
+    <script>
+      (function(){
+        var t=localStorage.getItem('nt-theme')||'auto';
+        var d=t==='dark'||(t==='auto'&&window.matchMedia('(prefers-color-scheme:dark)').matches);
+        if(d)document.documentElement.classList.add('dark');
+      })();
+    </script>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="h-full flex flex-col bg-gray-50 dark:bg-gray-900 transition-colors duration-200" data-controller="flash">
+    <%= render "layouts/navbar" if user_signed_in? %>
+
+    <% if notice.present? %>
+      <div id="flash-notice"
+           class="fixed top-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm z-50 flex items-center gap-2 rounded-lg bg-green-500 px-4 py-3 text-white shadow-lg"
+           data-flash-target="message">
+        <%= notice %>
+        <button class="ml-auto text-white/80 hover:text-white" data-action="flash#dismiss">✕</button>
+      </div>
+    <% end %>
+
+    <% if alert.present? %>
+      <div id="flash-alert"
+           class="fixed top-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm z-50 flex items-center gap-2 rounded-lg bg-red-500 px-4 py-3 text-white shadow-lg"
+           data-flash-target="message">
+        <%= alert %>
+        <button class="ml-auto text-white/80 hover:text-white" data-action="flash#dismiss">✕</button>
+      </div>
+    <% end %>
+
+    <main class="flex-1 flex flex-col">
+      <%= yield %>
+    </main>
+
+    <%# Card modal portal — Turbo Frame renders card detail here %>
+    <%= turbo_frame_tag "card_modal" %>
+  </body>
+</html>

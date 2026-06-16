@@ -1,0 +1,5 @@
+<% if @comment.persisted? %>
+  <%= turbo_stream.append "card_comments_#{@card.id}" do %>
+    <%= render @comment %>
+  <% end %>
+<% end %>

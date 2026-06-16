@@ -1,0 +1,29 @@
+<%
+  total_logged = card.total_logged_minutes
+  estimate     = card.estimated_minutes
+  pct          = estimate && estimate > 0 ? [[total_logged * 100 / estimate, 100].min, 0].max : nil
+  over_estimate = estimate && estimate > 0 && total_logged > estimate
+%>
+
+<div class="mb-1">
+  <div class="flex items-center justify-between mb-1">
+    <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider"><%= t("time_tracking.title") %></h4>
+  </div>
+
+  <% if estimate && estimate > 0 %>
+    <div class="flex items-center justify-between text-xs text-gray-500 mb-1">
+      <span><%= t("time_tracking.logged") %>: <span class="font-medium text-gray-700"><%= card.formatted_time(total_logged) || "0m" %></span></span>
+      <span><%= t("time_tracking.estimate") %>: <span class="font-medium text-gray-700"><%= card.formatted_time(estimate) %></span></span>
+    </div>
+    <div class="h-1.5 bg-gray-200 rounded-full overflow-hidden mb-3">
+      <div class="h-full rounded-full transition-all <%= over_estimate ? 'bg-red-500' : 'bg-indigo-500' %>"
+           style="width: <%= pct %>%"></div>
+    </div>
+  <% elsif total_logged > 0 %>
+    <p class="text-xs text-gray-500 mb-3"><%= t("time_tracking.logged") %>: <span class="font-medium text-gray-700"><%= card.formatted_time(total_logged) %></span></p>
+  <% end %>
+
+  <div id="time_entries_<%= card.id %>">
+    <%= render "cards/time_entries_list", card: card %>
+  </div>
+</div>

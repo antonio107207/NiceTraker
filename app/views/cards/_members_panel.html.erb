@@ -1,0 +1,27 @@
+<div id="card_members_panel_<%= card.id %>">
+  <% memberships_by_user_id = card.card_memberships.index_by(&:user_id) %>
+
+  <% board_members.each do |member| %>
+    <% membership = memberships_by_user_id[member.id] %>
+    <div class="flex items-center gap-2 py-0.5">
+      <div class="w-6 h-6 rounded-full bg-indigo-400 text-white text-xs flex items-center justify-center font-medium flex-shrink-0">
+        <%= member.initials %>
+      </div>
+      <span class="text-xs flex-1 truncate"><%= member.display_name %></span>
+      <% if membership %>
+        <%= button_to card_membership_path(membership), method: :delete,
+              data: { turbo_stream: true }, form: { class: "contents" },
+              class: "text-xs text-indigo-600 bg-indigo-50 hover:bg-red-50 hover:text-red-600 px-2 py-0.5 rounded cursor-pointer font-medium" do %>✓<% end %>
+      <% else %>
+        <%= button_to card_card_memberships_path(card), method: :post,
+              params: { user_id: member.id },
+              data: { turbo_stream: true }, form: { class: "contents" },
+              class: "text-xs text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 px-2 py-0.5 rounded cursor-pointer" do %>+<% end %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <% if board_members.empty? %>
+    <p class="text-xs text-gray-400 text-center py-1"><%= t("members.none") %></p>
+  <% end %>
+</div>

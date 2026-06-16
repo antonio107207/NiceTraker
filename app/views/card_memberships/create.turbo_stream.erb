@@ -1,0 +1,3 @@
+<%= turbo_stream.replace "card_members_panel_#{@card.id}" do %>
+  <%= render "cards/members_panel", card: @card, board_members: @board_members %>
+<% end %>

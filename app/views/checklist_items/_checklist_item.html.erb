@@ -1,0 +1,17 @@
+<div id="checklist_item_<%= checklist_item.id %>" class="flex items-center gap-2 py-1">
+  <%= form_with url: checklist_item_path(checklist_item), method: :patch,
+        scope: :checklist_item, data: { turbo_stream: true } do |f| %>
+    <%= f.check_box :completed, checked: checklist_item.completed?,
+          class: "w-4 h-4 text-indigo-600 rounded",
+          data: { action: "change->checklist-item#toggle" },
+          onchange: "this.form.requestSubmit()" %>
+  <% end %>
+  <span class="text-sm text-gray-700 flex-1 <%= checklist_item.completed? ? 'line-through text-gray-400' : '' %>">
+    <%= checklist_item.title %>
+  </span>
+  <%= button_to checklist_item_path(checklist_item), method: :delete,
+        data: { turbo_stream: true },
+        class: "text-gray-300 hover:text-red-500 text-xs opacity-0 group-hover:opacity-100 transition-opacity" do %>
+    ✕
+  <% end %>
+</div>

@@ -1,0 +1,52 @@
+<div id="card_labels_panel_<%= card.id %>">
+  <% card_labels_by_label_id = card.card_labels.index_by(&:label_id) %>
+
+  <% labels.each do |label| %>
+    <% card_label = card_labels_by_label_id[label.id] %>
+    <div id="label_row_<%= label.id %>" class="flex items-center gap-1.5 py-0.5">
+      <% if card_label %>
+        <%= button_to card_label_path(card_label), method: :delete,
+              data: { turbo_stream: true }, form: { class: "contents" },
+              class: "w-5 h-5 rounded flex-shrink-0 flex items-center justify-center text-white text-xs font-bold leading-none cursor-pointer",
+              style: "background-color: #{label.color}" do %>✓<% end %>
+      <% else %>
+        <%= button_to card_card_labels_path(card), method: :post,
+              params: { label_id: label.id },
+              data: { turbo_stream: true }, form: { class: "contents" },
+              class: "w-5 h-5 rounded flex-shrink-0 border-2 border-gray-300 bg-white cursor-pointer" do %><% end %>
+      <% end %>
+      <span class="flex-shrink-0 w-10 h-4 rounded" style="background-color: <%= label.color %>"></span>
+      <span class="text-xs flex-1 truncate"><%= label.name.presence || t("labels.no_name") %></span>
+      <%= button_to label_path(label), method: :delete,
+            data: { turbo_stream: true, turbo_confirm: t("labels.delete_confirm") },
+            form: { class: "contents" },
+            class: "text-gray-300 hover:text-red-500 text-xs cursor-pointer ml-auto" do %>✕<% end %>
+    </div>
+  <% end %>
+
+  <% if labels.empty? %>
+    <p class="text-xs text-gray-400 text-center py-1"><%= t("labels.none") %></p>
+  <% end %>
+
+  <%# Create label form %>
+  <div class="mt-2 pt-2 border-t border-gray-100">
+    <p class="text-xs text-gray-500 font-medium mb-1.5"><%= t("labels.new_label") %></p>
+    <%= form_with url: board_labels_path(card.board_id), scope: :label, data: { turbo_stream: true } do |f| %>
+      <%= f.hidden_field :card_id, value: card.id %>
+      <div class="flex flex-wrap gap-1 mb-1.5">
+        <% Label::COLORS.each_with_index do |color, i| %>
+          <label class="cursor-pointer block">
+            <input type="radio" name="label[color]" value="<%= color %>"
+                   class="sr-only peer" <%= "checked" if i == 0 %>>
+            <span class="block w-6 h-5 rounded hover:opacity-80 transition-opacity peer-checked:ring-2 peer-checked:ring-offset-1 peer-checked:ring-gray-700"
+                  style="background-color: <%= color %>"></span>
+          </label>
+        <% end %>
+      </div>
+      <%= f.text_field :name, placeholder: t("labels.name_placeholder"),
+            class: "w-full px-2 py-1 text-xs border border-gray-200 rounded mb-1.5 focus:outline-none focus:ring-1 focus:ring-indigo-500" %>
+      <%= f.submit t("labels.create"),
+            class: "w-full bg-indigo-600 text-white text-xs py-1.5 rounded hover:bg-indigo-700 cursor-pointer" %>
+    <% end %>
+  </div>
+</div>

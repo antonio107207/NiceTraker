@@ -1,0 +1,87 @@
+<%# Summary strip %>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-4">
+  <%= render "reports/stat_card", label: t("reports.cards.total"),       value: @summary[:total],                    color: "indigo" %>
+  <%= render "reports/stat_card", label: t("reports.cards.overdue_cnt"), value: @summary[:overdue],                  color: "red" %>
+  <%= render "reports/stat_card", label: t("reports.cards.time_total"),  value: fmt_minutes(@summary[:time_min]),    color: "emerald" %>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+  <div class="px-5 py-3 border-b border-gray-100 flex items-center justify-between">
+    <h2 class="text-sm font-semibold text-gray-700"><%= t("reports.types.cards") %> &mdash; <%= @results.size %> <%= t("reports.items") %></h2>
+  </div>
+
+  <% if @results.empty? %>
+    <p class="px-5 py-10 text-sm text-gray-400 text-center"><%= t("reports.no_data") %></p>
+  <% else %>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="bg-gray-50">
+          <tr>
+            <% %w[ID Title Board List Assignees Labels Due\ Date Created Time Status].each do |h| %>
+              <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap"><%= h %></th>
+            <% end %>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          <% @results.each do |card| %>
+            <%
+              done_items  = card.checklists.sum { |cl| cl.checklist_items.count(&:completed?) }
+              total_items = card.checklists.sum { |cl| cl.checklist_items.size }
+              time_min    = card.time_entries.sum(&:minutes)
+              status_label, status_cls = if card.archived_at?
+                [t("reports.statuses.archived"), "bg-gray-100 text-gray-600"]
+              elsif card.due_completed?
+                [t("reports.statuses.completed"), "bg-green-100 text-green-700"]
+              elsif card.due_date && card.due_date < Time.current
+                [t("reports.statuses.overdue"), "bg-red-100 text-red-700"]
+              else
+                [t("reports.statuses.active"), "bg-blue-100 text-blue-700"]
+              end
+            %>
+            <tr class="hover:bg-gray-50 transition-colors">
+              <td class="px-4 py-3 whitespace-nowrap">
+                <span class="font-mono text-xs bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded"><%= card.identifier %></span>
+              </td>
+              <td class="px-4 py-3 max-w-xs">
+                <span class="font-medium text-gray-900 truncate block"><%= card.title %></span>
+              </td>
+              <td class="px-4 py-3 text-gray-500 whitespace-nowrap"><%= card.board.name %></td>
+              <td class="px-4 py-3 text-gray-500 whitespace-nowrap"><%= card.list.name %></td>
+              <td class="px-4 py-3">
+                <div class="flex flex-wrap gap-1">
+                  <% card.members.each do |m| %>
+                    <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 text-xs font-medium" title="<%= m.display_name %>">
+                      <%= m.initials %>
+                    </span>
+                  <% end %>
+                </div>
+              </td>
+              <td class="px-4 py-3">
+                <div class="flex flex-wrap gap-1">
+                  <% card.labels.each do |l| %>
+                    <span class="inline-block px-1.5 py-0.5 rounded text-xs text-white font-medium"
+                          style="background-color: <%= l.color %>"><%= l.name.presence || "·" %></span>
+                  <% end %>
+                </div>
+              </td>
+              <td class="px-4 py-3 whitespace-nowrap text-gray-500 text-xs">
+                <%= card.due_date&.strftime("%d %b %Y") || "—" %>
+              </td>
+              <td class="px-4 py-3 whitespace-nowrap text-gray-500 text-xs">
+                <%= card.created_at.strftime("%d %b %Y") %>
+              </td>
+              <td class="px-4 py-3 whitespace-nowrap text-xs font-medium text-gray-700">
+                <%= fmt_minutes(time_min) %>
+              </td>
+              <td class="px-4 py-3 whitespace-nowrap">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium <%= status_cls %>">
+                  <%= status_label %>
+                </span>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,6 @@
+<%= turbo_stream.replace "card_attachments_#{@card.id}" do %>
+  <%= render "cards/attachments_section", card: @card %>
+<% end %>
+<%= turbo_stream.replace "card_#{@card.id}" do %>
+  <%= render @card %>
+<% end %>

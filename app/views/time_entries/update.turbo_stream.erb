@@ -1,0 +1,3 @@
+<%= turbo_stream.replace "card_time_tracking_#{@card.id}" do %>
+  <%= render "cards/time_tracking_section", card: @card.reload %>
+<% end %>

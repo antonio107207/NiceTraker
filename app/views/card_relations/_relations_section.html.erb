@@ -1,0 +1,29 @@
+<% grouped = card.card_relations.includes(related_card: :board).group_by(&:relation_type) %>
+<% if grouped.any? %>
+  <div class="space-y-3">
+    <% CardRelation::TYPES.each do |type| %>
+      <% relations = grouped[type] %>
+      <% next if relations.blank? %>
+      <div>
+        <p class="text-xs text-gray-400 font-medium mb-1 uppercase tracking-wide"><%= t("card_relations.type_#{type}") %></p>
+        <div class="space-y-1">
+          <% relations.each do |relation| %>
+            <div id="card_relation_<%= relation.id %>" class="flex items-center gap-2 group">
+              <%= link_to board_card_path(relation.related_card.board_id, relation.related_card),
+                    data: { turbo_frame: "card_modal", turbo_action: "advance" },
+                    class: "flex-1 flex items-center gap-1.5 text-xs min-w-0 hover:bg-gray-50 rounded px-1 py-0.5 -mx-1 transition-colors" do %>
+                <span class="font-mono bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded shrink-0 text-[10px]"><%= relation.related_card.identifier %></span>
+                <span class="text-gray-700 truncate"><%= relation.related_card.title %></span>
+              <% end %>
+              <%= button_to card_relation_path(relation), method: :delete,
+                    data: { turbo_stream: true, turbo_confirm: t("card_relations.remove_confirm") },
+                    class: "opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-500 transition-all flex-shrink-0 text-xs leading-none" do %>✕<% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <p class="text-xs text-gray-400 italic"><%= t("card_relations.none") %></p>
+<% end %>

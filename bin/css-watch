@@ -1,0 +1,19 @@
+#!/bin/sh
+set -e
+mkdir -p /rails/app/assets/builds
+
+echo "Building initial CSS..."
+bundle exec rails tailwindcss:build
+
+echo "Watching for CSS changes..."
+while true; do
+  if inotifywait -r -e modify,create,delete,move \
+    /rails/app/views \
+    /rails/app/javascript \
+    /rails/app/assets/tailwind \
+    --exclude '\.css$' \
+    -q 2>/dev/null; then
+    echo "Changes detected, rebuilding CSS..."
+    bundle exec rails tailwindcss:build 2>&1 | grep -v "^$" || true
+  fi
+done

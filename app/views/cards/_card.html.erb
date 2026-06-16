@@ -1,0 +1,61 @@
+<div id="card_<%= card.id %>"
+     class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow mb-2 cursor-pointer group"
+     data-card-id="<%= card.id %>"
+     data-move-url="<%= move_card_path(card) %>">
+
+  <% if card.cover_color.present? %>
+    <div class="h-8 rounded-t-lg" style="background-color: <%= card.cover_color %>"></div>
+  <% end %>
+
+  <%= link_to board_card_path(card.board_id, card), data: { turbo_frame: "card_modal", turbo_action: "advance" },
+        class: "block px-3 py-2" do %>
+    <%# Labels %>
+    <% if card.labels.any? %>
+      <div class="flex flex-wrap gap-1 mb-1">
+        <% card.labels.each do |label| %>
+          <span class="inline-block h-2 w-10 rounded-full" style="background-color: <%= label.color %>"></span>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="flex items-baseline justify-between gap-2">
+      <p class="text-sm text-gray-800 font-medium leading-snug"><%= card.title %></p>
+      <% if card.number.present? %>
+        <span class="shrink-0 text-xs text-gray-400 font-mono"><%= card.identifier %></span>
+      <% end %>
+    </div>
+
+    <%# Card metadata %>
+    <div class="flex items-center gap-2 mt-2 text-xs text-gray-400">
+      <% if card.due_date.present? %>
+        <span class="<%= card.due_date < Time.current && !card.due_completed ? 'text-red-500' : '' %>">
+          📅 <%= card.due_date.strftime("%b %d") %>
+        </span>
+      <% end %>
+
+      <% done, total = card.checklist_progress %>
+      <% if total > 0 %>
+        <span class="<%= done == total ? 'text-green-600' : '' %>">☑ <%= done %>/<%= total %></span>
+      <% end %>
+
+      <% if card.attachments.any? %>
+        <span>📎 <%= card.attachments.count %></span>
+      <% end %>
+
+      <% if card.members.any? %>
+        <div class="ml-auto flex -space-x-1">
+          <% card.members.first(3).each do |member| %>
+            <% if member.avatar_url.present? %>
+              <img src="<%= member.avatar_url %>" alt="<%= member.display_name %>"
+                   class="w-5 h-5 rounded-full border border-white object-cover">
+            <% else %>
+              <div class="w-5 h-5 rounded-full border border-white bg-indigo-400 text-white text-xs flex items-center justify-center font-medium">
+                <%= member.initials[0] %>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

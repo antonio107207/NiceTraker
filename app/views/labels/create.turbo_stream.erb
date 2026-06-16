@@ -1,0 +1,5 @@
+<% if @card %>
+  <%= turbo_stream.replace "card_labels_panel_#{@card.id}" do %>
+    <%= render "cards/labels_panel", card: @card, labels: @labels %>
+  <% end %>
+<% end %>

@@ -1,0 +1,81 @@
+<div id="list_<%= list.id %>"
+     class="w-full sm:w-72 flex-shrink-0 bg-gray-100 rounded-xl shadow-md flex flex-col sm:max-h-full"
+     data-controller="collapsible"
+     data-list-id="<%= list.id %>">
+
+  <%# List header %>
+  <div class="flex items-center gap-1 px-3 pt-3 pb-2 sm:cursor-grab" data-list-drag-handle>
+
+    <%# Collapse toggle — mobile only %>
+    <button type="button"
+            class="sm:hidden flex-shrink-0 text-gray-400 hover:text-gray-600 p-1 -ml-1 rounded touch-manipulation"
+            data-action="click->collapsible#toggle">
+      <svg data-collapsible-target="chevron"
+           class="w-4 h-4 transition-transform duration-200"
+           fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+      </svg>
+    </button>
+
+    <h3 class="text-sm font-semibold text-gray-800 truncate flex-1 sm:cursor-text"
+        data-controller="editable"
+        data-editable-url-value="<%= list_path(list) %>"
+        data-editable-field-value="list[name]">
+      <%= list.name %>
+    </h3>
+
+    <%# Card count badge — mobile only, always visible in header %>
+    <span class="sm:hidden text-xs text-gray-500 bg-gray-200 rounded-full px-2 py-0.5 font-medium flex-shrink-0">
+      <%= list.cards.size %>
+    </span>
+
+    <%# List menu — admin only %>
+    <% if policy(list.board).manage_lists? %>
+    <div class="relative" data-controller="dropdown">
+      <button data-action="click->dropdown#toggle" class="text-gray-400 hover:text-gray-600 p-1 rounded flex-shrink-0">
+        ···
+      </button>
+      <div data-dropdown-target="menu" class="hidden absolute right-0 top-6 w-44 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-1 z-50 text-sm">
+        <%= button_to t("lists.archive"), list_path(list), method: :delete,
+              data: { turbo_stream: true, confirm: t("lists.archive_confirm") },
+              class: "block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100" %>
+      </div>
+    </div>
+    <% end %>
+  </div>
+
+  <%# Collapsible body — cards + add card %>
+  <div data-collapsible-target="content" class="flex flex-col sm:flex-1 sm:overflow-hidden">
+
+    <div class="sm:flex-1 sm:overflow-y-auto px-2 pb-2 min-h-[2rem]"
+         id="cards_list_<%= list.id %>"
+         data-cards-list
+         data-list-id="<%= list.id %>">
+      <%= render list.cards %>
+    </div>
+
+    <% if policy(list.board).manage_cards? %>
+    <div class="px-2 pb-2" data-controller="toggle-form" id="add_card_area_<%= list.id %>">
+      <div data-toggle-form-target="toggle">
+        <button data-action="toggle-form#show"
+                class="w-full text-left text-gray-500 hover:text-gray-700 hover:bg-gray-200 px-2 py-2 rounded-lg text-sm transition-colors touch-manipulation">
+          <%= t("lists.add_card") %>
+        </button>
+      </div>
+      <div data-toggle-form-target="form" class="hidden" id="new_card_form_<%= list.id %>">
+        <%= form_with url: list_cards_path(list), scope: :card, data: { turbo_stream: true } do |f| %>
+          <%= f.text_area :title, placeholder: t("lists.card_title_placeholder"),
+                rows: 3,
+                class: "w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none resize-none",
+                autofocus: true, required: true %>
+          <div class="flex items-center gap-2 mt-1">
+            <%= f.submit t("lists.add_card_btn"), class: "bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-3 py-1.5 rounded-lg cursor-pointer" %>
+            <button type="button" data-action="toggle-form#hide" class="text-gray-500 hover:text-gray-700 text-sm"><%= t("common.close") %></button>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    <% end %>
+
+  </div>
+</div>

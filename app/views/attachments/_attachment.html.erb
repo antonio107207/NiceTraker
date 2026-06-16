@@ -1,0 +1,21 @@
+<div id="attachment_<%= attachment.id %>" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 group">
+  <div class="w-14 h-10 bg-gray-100 rounded flex items-center justify-center flex-shrink-0 overflow-hidden">
+    <% if attachment.variable? %>
+      <%= image_tag attachment.variant(resize_to_fill: [56, 40]), class: "w-full h-full object-cover" %>
+    <% else %>
+      <span class="text-xl">📄</span>
+    <% end %>
+  </div>
+  <div class="flex-1 min-w-0">
+    <%= link_to attachment.filename.to_s,
+          rails_blob_path(attachment, disposition: "attachment"),
+          class: "text-sm font-medium text-indigo-600 hover:text-indigo-800 truncate block",
+          target: "_blank" %>
+    <span class="text-xs text-gray-400"><%= number_to_human_size(attachment.byte_size) %></span>
+  </div>
+  <%= button_to attachment_path(attachment), method: :delete,
+        data: { turbo_stream: true, turbo_confirm: t("attachments.delete_confirm") },
+        form: { class: "contents" } do %>
+    <span class="text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">✕</span>
+  <% end %>
+</div>

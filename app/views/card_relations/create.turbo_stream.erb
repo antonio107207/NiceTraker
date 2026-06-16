@@ -1,0 +1,6 @@
+<%= turbo_stream.replace "card_relations_#{@card.id}" do %>
+  <%= render "card_relations/linked_cards", card: @card.reload %>
+<% end %>
+<%= turbo_stream.replace "card_relation_search_#{@card.id}" do %>
+  <%= turbo_frame_tag "card_relation_search_#{@card.id}" %>
+<% end %>

@@ -1,0 +1,10 @@
+<div id="card_attachments_<%= card.id %>">
+  <% if card.attachments.attached? %>
+    <div>
+      <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2"><%= t("cards.attachments") %></h4>
+      <div class="space-y-1">
+        <%= render partial: "attachments/attachment", collection: card.attachments, as: :attachment %>
+      </div>
+    </div>
+  <% end %>
+</div>

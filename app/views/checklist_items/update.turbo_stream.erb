@@ -1,0 +1,22 @@
+<% done, total = @checklist.progress %>
+
+<%= turbo_stream.replace "checklist_item_#{@item.id}" do %>
+  <%= render @item %>
+<% end %>
+
+<%= turbo_stream.replace "checklist_progress_#{@checklist.id}" do %>
+  <div id="checklist_progress_<%= @checklist.id %>" class="mb-3">
+    <% if total > 0 %>
+      <div class="h-1.5 bg-gray-200 rounded-full">
+        <div class="h-1.5 rounded-full transition-all duration-300 <%= done == total ? 'bg-green-500' : 'bg-indigo-500' %>"
+             style="width: <%= (done.to_f / total * 100).round %>%"></div>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<%= turbo_stream.replace "checklist_counter_#{@checklist.id}" do %>
+  <span id="checklist_counter_<%= @checklist.id %>" class="text-xs text-gray-500">
+    <%= "#{done}/#{total}" if total > 0 %>
+  </span>
+<% end %>

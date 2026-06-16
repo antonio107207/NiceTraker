@@ -1,0 +1,32 @@
+<div class="min-h-screen bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center px-4">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 text-center">
+    <div class="mb-6">
+      <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+      </div>
+      <h1 class="text-2xl font-bold text-gray-900"><%= t("invitations.title") %></h1>
+      <p class="text-gray-500 mt-2">
+        <%= t("invitations.message_html",
+              inviter: @invitation.inviter.display_name,
+              board: @invitation.board.name).html_safe %>
+      </p>
+    </div>
+
+    <div class="space-y-3">
+      <%= button_to accept_invitation_path(@invitation, token: @invitation.token),
+            method: :post,
+            class: "w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-semibold transition-colors" do %>
+        <%= t("invitations.accept") %>
+      <% end %>
+
+      <%= button_to decline_invitation_path(@invitation, token: @invitation.token),
+            method: :post,
+            class: "w-full border border-gray-300 hover:bg-gray-50 text-gray-700 py-3 rounded-xl font-medium transition-colors" do %>
+        <%= t("invitations.decline") %>
+      <% end %>
+    </div>
+  </div>
+</div>

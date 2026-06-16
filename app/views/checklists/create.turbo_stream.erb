@@ -1,0 +1,5 @@
+<%= turbo_stream.append "card_#{@card.id}_checklists" do %>
+  <div id="checklist_<%= @checklist.id %>">
+    <%= render "checklists/checklist", checklist: @checklist %>
+  </div>
+<% end %>
