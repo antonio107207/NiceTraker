@@ -31,7 +31,7 @@ gem "noticed", "~> 2.0"
 gem "pg_search"
 
 # Rich text attachments
-gem "image_processing", "~> 1.2"
+gem "image_processing", "~> 2.0"
 
 # Rails 8 built-in backends
 gem "solid_cache"
