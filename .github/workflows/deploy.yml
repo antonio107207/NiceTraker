@@ -58,6 +58,7 @@ jobs:
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
           envs: GHCR_TOKEN,GHCR_USER
+          debug: true
           script: |
             cd ${{ secrets.DEPLOY_PATH }}
             echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
