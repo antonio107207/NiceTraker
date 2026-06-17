@@ -6,10 +6,6 @@ staged=$(git diff --name-only --cached --diff-filter=ACM | grep '\.rb$' || true)
 
 echo "→ RuboCop on staged Ruby files..."
 
-if docker ps --format '{{.Names}}' 2>/dev/null | grep -q '^nice_tasker-web-1$'; then
-  docker exec nice_tasker-web-1 bundle exec rubocop \
-    --no-color --format simple \
-    $(echo "$staged" | sed 's|^|/rails/|')
-else
-  echo "  (Docker not running — skipping RuboCop)"
-fi
+[ -s "$HOME/.rvm/scripts/rvm" ] && source "$HOME/.rvm/scripts/rvm"
+rvm use "$(cat .ruby-version)" --quiet 2>/dev/null || true
+bundle exec rubocop --no-color --format simple $staged
