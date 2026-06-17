@@ -11,7 +11,7 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
-COMPOSE="docker compose -f docker-compose.prod.yml"
+COMPOSE="docker compose -f docker-compose.prod.yml --env-file .env.production"
 
 if [ ! -f .env.production ]; then
   echo "ERROR: .env.production not found. Copy .env.production.example and fill in the values."
