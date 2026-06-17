@@ -1,0 +1,61 @@
+name: nice_tasker
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-nice_tasker}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: nice_tasker_production
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-nice_tasker} -d nice_tasker_production"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - internal
+
+  web:
+    image: ${APP_IMAGE}
+    restart: unless-stopped
+    env_file: .env.production
+    environment:
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      RAILS_LOG_TO_STDOUT: "true"
+    volumes:
+      - storage:/rails/storage
+    ports:
+      - "3001:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - internal
+
+  worker:
+    image: ${APP_IMAGE}
+    restart: unless-stopped
+    env_file: .env.production
+    environment:
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      RAILS_LOG_TO_STDOUT: "true"
+    command: ["bundle", "exec", "rails", "solid_queue:start"]
+    volumes:
+      - storage:/rails/storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - internal
+
+volumes:
+  postgres_data:
+  storage:
+
+networks:
+  internal:
