@@ -59,8 +59,7 @@ production:
   primary: &primary_production
     <<: *default
     database: nice_tasker_production
-    username: nice_tasker
-    password: <%= ENV["NICE_TASKER_DATABASE_PASSWORD"] %>
+    password: <%= ENV.fetch("DB_PASSWORD", "") %>
   cache:
     <<: *primary_production
     database: nice_tasker_production_cache

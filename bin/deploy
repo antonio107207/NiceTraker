@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# Manual deploy on the production server.
+# Normally deploys happen automatically via GitHub Actions on push to main.
+#
+# First deploy:
+#   git clone <repo> && cd nice_tasker
+#   cp .env.production.example .env.production  # fill in values including APP_IMAGE
+#   docker login ghcr.io -u <github-username>   # enter GitHub PAT with read:packages
+#   bin/deploy
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+
+COMPOSE="docker compose -f docker-compose.prod.yml"
+
+if [ ! -f .env.production ]; then
+  echo "ERROR: .env.production not found. Copy .env.production.example and fill in the values."
+  exit 1
+fi
+
+echo "==> Pulling latest image..."
+$COMPOSE pull
+
+echo "==> Running database migrations..."
+$COMPOSE run --rm web ./bin/rails db:prepare
+
+echo "==> Restarting web and worker..."
+$COMPOSE up -d --no-deps web worker
+
+echo "==> Cleaning up old images..."
+docker image prune -f
+
+echo ""
+echo "==> Deploy complete. Running containers:"
+$COMPOSE ps
