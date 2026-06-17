@@ -31,8 +31,8 @@
     </div>
 
     <%= form_for(resource, as: resource_name, url: registration_path(resource_name),
-          html: { method: :put, class: "space-y-6" },
-          data: { turbo: false }) do |f| %>
+          html: { method: :put, class: "space-y-6",
+                  data: { controller: "profile-form", turbo: "false" } }) do |f| %>
 
       <%# Validation errors %>
       <% if resource.errors.any? %>
@@ -71,10 +71,69 @@
         </div>
 
         <div>
-          <%= f.label :avatar, t("profile.avatar"), class: "block text-sm font-medium text-gray-700 mb-1" %>
-          <%= f.file_field :avatar,
-                accept: "image/*",
-                class: "w-full text-sm text-gray-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer" %>
+          <%= f.label :avatar, t("profile.avatar"), class: "block text-sm font-medium text-gray-700 mb-2" %>
+
+          <div data-controller="avatar-cropper" class="flex items-center gap-4">
+            <%# Small circular preview %>
+            <% if current_user.avatar.attached? %>
+              <img data-avatar-cropper-target="preview"
+                   src="<%= url_for(current_user.avatar) %>"
+                   alt="" class="w-14 h-14 rounded-full object-cover ring-2 ring-indigo-200 flex-shrink-0">
+            <% elsif current_user.avatar_url.present? %>
+              <img data-avatar-cropper-target="preview"
+                   src="<%= current_user.avatar_url %>"
+                   alt="" class="w-14 h-14 rounded-full object-cover ring-2 ring-indigo-200 flex-shrink-0">
+            <% else %>
+              <img data-avatar-cropper-target="preview"
+                   src="" alt="" class="hidden w-14 h-14 rounded-full object-cover ring-2 ring-indigo-200 flex-shrink-0">
+              <div data-avatar-cropper-target="initials"
+                   class="w-14 h-14 rounded-full bg-indigo-400 flex items-center justify-center text-white text-lg font-bold ring-2 ring-indigo-200 flex-shrink-0">
+                <%= current_user.initials %>
+              </div>
+            <% end %>
+
+            <div>
+              <%= f.file_field :avatar,
+                    accept: "image/*",
+                    class: "hidden",
+                    data: { avatar_cropper_target: "input", action: "change->avatar-cropper#onFileChange" } %>
+              <button type="button"
+                      data-action="click->avatar-cropper#openPicker"
+                      class="px-4 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg shadow-sm transition-colors cursor-pointer">
+                <%= t("profile.change_photo") %>
+              </button>
+              <p class="text-xs text-gray-400 mt-1.5">JPG, PNG · <%= t("profile.photo_size_hint") %></p>
+            </div>
+
+            <%# Crop modal %>
+            <div data-avatar-cropper-target="modal"
+                 class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+              <div class="bg-white rounded-2xl shadow-2xl w-full max-w-xs overflow-hidden">
+                <div class="px-5 py-4 border-b border-gray-100">
+                  <h3 class="text-base font-semibold text-gray-900"><%= t("profile.crop_photo") %></h3>
+                  <p class="text-xs text-gray-400 mt-0.5"><%= t("profile.crop_hint") %></p>
+                </div>
+                <div class="p-1 bg-gray-900">
+                  <canvas data-avatar-cropper-target="canvas"
+                          width="320" height="320"
+                          class="w-full aspect-square cursor-move touch-none block">
+                  </canvas>
+                </div>
+                <div class="px-4 py-4 flex gap-3">
+                  <button type="button"
+                          data-action="click->avatar-cropper#cancel"
+                          class="flex-1 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors cursor-pointer">
+                    <%= t("common.cancel") %>
+                  </button>
+                  <button type="button"
+                          data-action="click->avatar-cropper#apply"
+                          class="flex-1 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-colors cursor-pointer">
+                    <%= t("profile.apply") %>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -87,7 +146,8 @@
           <%= f.password_field :password,
                 autocomplete: "new-password",
                 placeholder: t("profile.password_placeholder"),
-                class: "w-full px-4 py-2.5 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition" %>
+                class: "w-full px-4 py-2.5 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition",
+                data: { profile_form_target: "newPassword", action: "input->profile-form#onNewPasswordInput" } %>
           <% if @minimum_password_length %>
             <p class="text-xs text-gray-400 mt-1"><%= t("profile.min_length", count: @minimum_password_length) %></p>
           <% end %>
@@ -98,10 +158,11 @@
           <%= f.password_field :password_confirmation,
                 autocomplete: "new-password",
                 placeholder: t("profile.password_placeholder"),
-                class: "w-full px-4 py-2.5 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition" %>
+                class: "w-full px-4 py-2.5 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition",
+                data: { profile_form_target: "newPassword", action: "input->profile-form#onNewPasswordInput" } %>
         </div>
 
-        <div class="border-t border-gray-100 pt-4">
+        <div class="hidden border-t border-gray-100 pt-4" data-profile-form-target="currentPasswordSection">
           <%= f.label :current_password, t("profile.current_password"), class: "block text-sm font-medium text-gray-700 mb-1" %>
           <%= f.password_field :current_password,
                 autocomplete: "current-password",
@@ -111,10 +172,11 @@
       </div>
 
       <%# Actions %>
-      <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
         <%= f.submit t("profile.save_btn"),
               class: "bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-6 py-2.5 rounded-xl cursor-pointer transition-colors" %>
-        <%= link_to t("common.cancel"), :back, class: "text-sm text-gray-500 hover:text-gray-700" %>
+        <%= link_to t("common.cancel"), :back,
+              class: "px-6 py-2.5 text-sm font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors" %>
       </div>
     <% end %>
 
