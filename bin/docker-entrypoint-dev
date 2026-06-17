@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Install/update gems if Gemfile changed
+bundle check || bundle install
+
 # Remove stale puma PID
 rm -f /rails/tmp/pids/server.pid
 
