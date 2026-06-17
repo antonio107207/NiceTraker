@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 set -e
 
-staged=$(git diff --name-only --cached --diff-filter=ACM | grep '\.rb$' || true)
-[ -z "$staged" ] && exit 0
+# staged=$(git diff --name-only --cached --diff-filter=ACM | grep '\.rb$' || true)
+# [ -z "$staged" ] && exit 0
 
 echo "→ RuboCop on staged Ruby files..."
 
 [ -s "$HOME/.rvm/scripts/rvm" ] && source "$HOME/.rvm/scripts/rvm"
 rvm use "$(cat .ruby-version)" --quiet 2>/dev/null || true
-bundle exec rubocop --no-color --format simple $staged
+bundle exec rubocop
