@@ -27,7 +27,7 @@ gem "acts_as_list"
 # Search
 gem "pg_search"
 
-# Rich text attachments (image variants via libvips)
+# Rich text attachments
 gem "image_processing", "~> 2.0"
 
 # Rails 8 built-in backends
@@ -54,5 +54,5 @@ end
 
 group :development do
   gem "web-console"
-  gem "letter_opener"
+  gem "dotenv-rails"
 end

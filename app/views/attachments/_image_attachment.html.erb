@@ -1,0 +1,23 @@
+<div id="attachment_<%= attachment.id %>" class="relative group rounded-lg overflow-hidden bg-gray-100 aspect-video">
+  <%= link_to rails_blob_path(attachment, disposition: :inline), target: "_blank", rel: "noopener",
+        class: "block w-full h-full" do %>
+    <%= image_tag rails_blob_path(attachment, disposition: :inline),
+          class: "w-full h-full object-cover transition-transform duration-200 group-hover:scale-105",
+          loading: "lazy" %>
+  <% end %>
+
+  <%# Filename on hover %>
+  <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 to-transparent px-2 pt-4 pb-1.5
+              translate-y-full group-hover:translate-y-0 transition-transform duration-200">
+    <p class="text-white text-xs truncate"><%= attachment.filename %></p>
+  </div>
+
+  <%# Delete button %>
+  <%= button_to attachment_path(attachment), method: :delete,
+        data: { turbo_stream: true, turbo_confirm: t("attachments.delete_confirm") },
+        form: { class: "contents" } do %>
+    <span class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-black/40 hover:bg-red-500
+                 flex items-center justify-center text-white text-xs leading-none
+                 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">✕</span>
+  <% end %>
+</div>

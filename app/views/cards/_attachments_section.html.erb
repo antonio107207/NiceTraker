@@ -1,10 +1,25 @@
 <div id="card_attachments_<%= card.id %>">
   <% if card.attachments.attached? %>
+    <%
+      images = card.attachments.select { |a| a.content_type.start_with?("image/") }
+      files  = card.attachments.reject { |a| a.content_type.start_with?("image/") }
+    %>
     <div>
       <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2"><%= t("cards.attachments") %></h4>
-      <div class="space-y-1">
-        <%= render partial: "attachments/attachment", collection: card.attachments, as: :attachment %>
-      </div>
+
+      <%# Image previews grid %>
+      <% if images.any? %>
+        <div class="grid grid-cols-2 gap-2 mb-2">
+          <%= render partial: "attachments/image_attachment", collection: images, as: :attachment %>
+        </div>
+      <% end %>
+
+      <%# Non-image files list %>
+      <% if files.any? %>
+        <div class="space-y-1">
+          <%= render partial: "attachments/attachment", collection: files, as: :attachment %>
+        </div>
+      <% end %>
     </div>
   <% end %>
 </div>
