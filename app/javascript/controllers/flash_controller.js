@@ -6,10 +6,8 @@ export default class extends Controller {
   }
 
   dismiss() {
-    this.element.querySelectorAll("[data-flash-target='message']").forEach(el => {
-      el.style.opacity = "0"
-      el.style.transition = "opacity 0.3s"
-      setTimeout(() => el.remove(), 300)
-    })
+    this.element.style.opacity = "0"
+    this.element.style.transition = "opacity 0.3s"
+    setTimeout(() => this.element.remove(), 300)
   }
 }
