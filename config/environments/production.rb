@@ -35,12 +35,16 @@ Rails.application.configure do
 
   # Log to STDOUT (docker logs) AND to file (tail -f log/production.log on host via bind mount).
   config.log_tags = [ :request_id ]
-  config.logger = ActiveSupport::TaggedLogging.new(
-    ActiveSupport::BroadcastLogger.new(
-      ActiveSupport::Logger.new(STDOUT),
-      ActiveSupport::Logger.new(Rails.root.join("log/production.log"), 5, 50.megabytes)
-    )
-  )
+  log_path = Rails.root.join("log/production.log")
+  FileUtils.mkdir_p(log_path.dirname)
+  file_logger = begin
+    ActiveSupport::Logger.new(log_path, 5, 50.megabytes)
+  rescue Errno::EACCES, Errno::ENOENT
+    nil
+  end
+  loggers = [ ActiveSupport::Logger.new(STDOUT) ]
+  loggers << file_logger if file_logger
+  config.logger = ActiveSupport::TaggedLogging.new(ActiveSupport::BroadcastLogger.new(*loggers))
 
   # Change to "debug" to log everything (including potentially personally-identifiable information!).
   config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
