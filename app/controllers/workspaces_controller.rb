@@ -29,7 +29,15 @@ class WorkspacesController < ApplicationController
 
   def update
     if @workspace.update(workspace_params)
-      redirect_to @workspace, notice: t("flash.workspace_updated")
+      if turbo_frame_request?
+        render turbo_stream: [
+          turbo_stream.replace("workspace_header",
+            partial: "workspaces/header", locals: { workspace: @workspace }),
+          turbo_stream.replace("modal", "")
+        ]
+      else
+        redirect_to @workspace, notice: t("flash.workspace_updated")
+      end
     else
       render :edit, status: :unprocessable_entity
     end

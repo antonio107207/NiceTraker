@@ -4,23 +4,7 @@
 <div class="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
   <%# Header %>
-  <div class="flex items-center gap-3 mb-6">
-    <div class="w-10 h-10 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-lg font-bold flex-shrink-0">
-      <%= @workspace.name[0].upcase %>
-    </div>
-    <div class="flex-1 min-w-0">
-      <h1 class="text-xl font-bold text-gray-900 truncate"><%= @workspace.name %></h1>
-      <% if @workspace.description.present? %>
-        <p class="text-sm text-gray-500 truncate"><%= @workspace.description %></p>
-      <% end %>
-    </div>
-    <div class="flex gap-2 flex-shrink-0">
-      <%= link_to t("common.settings"), edit_workspace_path(@workspace),
-            class: "px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 bg-white text-gray-700 transition-colors" %>
-      <%= link_to t("workspaces.new_board"), new_workspace_board_path(@workspace),
-            class: "px-4 py-2 text-sm bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors" %>
-    </div>
-  </div>
+  <%= render "header", workspace: @workspace %>
 
   <%# Members management (admin only) %>
   <% if policy(@workspace).remove_member? %>
@@ -80,7 +64,8 @@
       <p class="font-medium"><%= t("workspaces.no_boards") %></p>
       <p class="text-sm mt-1"><%= t("workspaces.no_boards_hint") %></p>
       <%= link_to t("workspaces.create_board"), new_workspace_board_path(@workspace),
-            class: "mt-4 inline-block px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded-lg transition-colors" %>
+            class: "mt-4 inline-block px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded-lg transition-colors",
+            data: { turbo_frame: "modal" } %>
     </div>
   <% end %>
 

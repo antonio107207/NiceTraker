@@ -23,7 +23,7 @@ const GRADIENTS = [
 ]
 
 export default class extends Controller {
-  static targets = ["panel","tab","colorInput","removeInput","fileInput","preview","swatchBtn"]
+  static targets = ["panel","tab","colorInput","removeInput","fileInput","preview","swatchBtn","imagePreviewWrap","imagePreview","uploadArea"]
 
   connect() {
     this._activeTab = this.hasFileInputTarget && this.element.dataset.hasImage === "true" ? "photos" : "colors"
@@ -52,9 +52,28 @@ export default class extends Controller {
     const reader = new FileReader()
     reader.onload = ev => {
       this._updatePreview(null, ev.target.result)
+      if (this.hasImagePreviewTarget) {
+        this.imagePreviewTarget.src = ev.target.result
+        this.imagePreviewWrapTarget.classList.remove("hidden")
+      }
+      if (this.hasUploadAreaTarget) this.uploadAreaTarget.classList.add("hidden")
     }
     reader.readAsDataURL(file)
     this._highlightSwatch(null)
+  }
+
+  clearImage() {
+    this._clearFile()
+    this.removeInputTarget.value = "1"
+    this.colorInputTarget.value = COLORS[0]
+    if (this.hasImagePreviewTarget) {
+      this.imagePreviewTarget.src = ""
+      this.imagePreviewWrapTarget.classList.add("hidden")
+    }
+    if (this.hasUploadAreaTarget) this.uploadAreaTarget.classList.remove("hidden")
+    this._updatePreview(COLORS[0], null)
+    this._highlightSwatch(COLORS[0])
+    this._switchTab("colors")
   }
 
   triggerUpload() {

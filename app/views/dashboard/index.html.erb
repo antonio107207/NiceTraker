@@ -16,7 +16,8 @@
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-lg font-semibold text-gray-800"><%= t("dashboard.your_workspaces") %></h2>
         <%= link_to t("dashboard.new_workspace"), new_workspace_path,
-              class: "text-sm bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-lg transition-colors" %>
+              class: "text-sm bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-lg transition-colors",
+              data: { turbo_frame: "modal" } %>
       </div>
 
       <% if @workspaces.any? %>
@@ -27,13 +28,16 @@
                 <%= workspace.name[0].upcase %>
               <% end %>
               <%= link_to workspace.name, workspace_path(workspace), class: "font-semibold text-gray-800 hover:text-indigo-600 transition-colors" %>
-              <%= link_to t("common.settings"), edit_workspace_path(workspace), class: "ml-auto text-xs text-gray-500 hover:text-gray-700" %>
+              <%= link_to t("common.settings"), edit_workspace_path(workspace),
+                    class: "ml-auto text-xs text-gray-500 hover:text-gray-700",
+                    data: { turbo_frame: "modal" } %>
             </div>
 
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               <%= render workspace.boards.active.order(:name) %>
               <%= link_to new_workspace_board_path(workspace),
-                    class: "group flex items-center justify-center h-24 rounded-xl bg-gray-200 hover:bg-gray-300 transition-colors" do %>
+                    class: "group flex items-center justify-center h-24 rounded-xl bg-gray-200 hover:bg-gray-300 transition-colors",
+                    data: { turbo_frame: "modal" } do %>
                 <span class="text-gray-500 group-hover:text-gray-700 text-sm font-medium"><%= t("dashboard.create_board") %></span>
               <% end %>
             </div>
@@ -42,7 +46,9 @@
       <% else %>
         <div class="text-center py-20 text-gray-500">
           <p class="text-lg mb-2"><%= t("dashboard.no_workspaces") %></p>
-          <%= link_to t("dashboard.create_first"), new_workspace_path, class: "text-indigo-600 hover:underline" %>
+          <%= link_to t("dashboard.create_first"), new_workspace_path,
+                class: "text-indigo-600 hover:underline",
+                data: { turbo_frame: "modal" } %>
         </div>
       <% end %>
     </section>
