@@ -21,12 +21,12 @@ class AttachmentsController < ApplicationController
   private
 
   def set_card
-    @card = Card.joins(:board).where(boards: { id: current_user.boards.select(:id) }).find(params[:card_id])
+    @card = Card.accessible_to(current_user).find(params[:card_id])
   end
 
   def set_attachment
     @attachment = ActiveStorage::Attachment.find(params[:id])
     raise ActiveRecord::RecordNotFound unless @attachment.record_type == "Card"
-    @card = Card.joins(:board).where(boards: { id: current_user.boards.select(:id) }).find(@attachment.record_id)
+    @card = Card.accessible_to(current_user).find(@attachment.record_id)
   end
 end

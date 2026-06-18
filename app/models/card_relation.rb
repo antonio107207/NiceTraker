@@ -13,6 +13,8 @@ class CardRelation < ApplicationRecord
   belongs_to :card
   belongs_to :related_card, class_name: "Card"
 
+  scope :accessible_to, ->(user) { joins(card: :board).where(boards: { id: user.boards.select(:id) }) }
+
   validates :relation_type, inclusion: { in: TYPES }
   validates :related_card_id, uniqueness: { scope: %i[card_id relation_type] }
   validate  :not_self_referential

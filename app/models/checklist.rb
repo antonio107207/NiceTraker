@@ -6,6 +6,8 @@ class Checklist < ApplicationRecord
 
   validates :title, presence: true
 
+  scope :accessible_to, ->(user) { joins(card: :board).where(boards: { id: user.boards.select(:id) }) }
+
   def progress
     total = checklist_items.size
     return [ 0, 0 ] if total.zero?

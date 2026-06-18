@@ -33,13 +33,11 @@ class CommentsController < ApplicationController
   private
 
   def set_card
-    @card = Card.joins(:board).where(boards: { id: current_user.boards.select(:id) }).find(params[:card_id])
+    @card = Card.accessible_to(current_user).find(params[:card_id])
   end
 
   def set_comment
-    @comment = Comment.joins(card: :board)
-                      .where(boards: { id: current_user.boards.select(:id) })
-                      .find(params[:id])
+    @comment = Comment.accessible_to(current_user).find(params[:id])
     @card = @comment.card
   end
 

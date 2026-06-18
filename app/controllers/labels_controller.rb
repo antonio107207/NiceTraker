@@ -33,9 +33,7 @@ class LabelsController < ApplicationController
     if params[:board_id]
       @board = current_user.boards.find(params[:board_id])
     else
-      @label = Label.joins(:board)
-                    .where(boards: { id: current_user.boards.select(:id) })
-                    .find(params[:id])
+      @label = Label.accessible_to(current_user).find(params[:id])
       @board = @label.board
     end
   end

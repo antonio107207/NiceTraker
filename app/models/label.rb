@@ -12,5 +12,6 @@ class Label < ApplicationRecord
   validates :color, presence: true, inclusion: { in: COLORS }
   validates :name, length: { maximum: 30 }
 
-  scope :ordered, -> { order(:name) }
+  scope :ordered,       -> { order(:name) }
+  scope :accessible_to, ->(user) { joins(:board).where(boards: { id: user.boards.select(:id) }) }
 end
