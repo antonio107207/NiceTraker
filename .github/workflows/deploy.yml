@@ -60,6 +60,7 @@ jobs:
           envs: GHCR_TOKEN,GHCR_USER
           script: |
             cd ${{ secrets.DEPLOY_PATH }}
+            mkdir -p log storage
             echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
             docker compose -f docker-compose.prod.yml --env-file .env.production pull
             docker compose -f docker-compose.prod.yml --env-file .env.production run --rm web ./bin/rails db:prepare
