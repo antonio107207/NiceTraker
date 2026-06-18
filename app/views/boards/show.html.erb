@@ -20,16 +20,26 @@
       <%# Members avatars %>
       <div class="hidden sm:flex -space-x-2">
         <% @board_members.first(5).each do |member| %>
-          <div class="w-7 h-7 rounded-full bg-indigo-400 ring-2 ring-white flex items-center justify-center text-xs font-bold text-white"
-               title="<%= member.display_name %>">
-            <%= member.initials %>
-          </div>
+          <% if member.avatar.attached? %>
+            <img src="<%= url_for(member.avatar) %>" alt="<%= member.display_name %>"
+                 title="<%= member.display_name %>"
+                 class="w-7 h-7 rounded-full object-cover ring-2 ring-white">
+          <% elsif member.avatar_url.present? %>
+            <img src="<%= member.avatar_url %>" alt="<%= member.display_name %>"
+                 title="<%= member.display_name %>"
+                 class="w-7 h-7 rounded-full object-cover ring-2 ring-white">
+          <% else %>
+            <div class="w-7 h-7 rounded-full bg-indigo-400 ring-2 ring-white flex items-center justify-center text-xs font-bold text-white"
+                 title="<%= member.display_name %>">
+              <%= member.initials %>
+            </div>
+          <% end %>
         <% end %>
       </div>
 
       <%# Invite popover — admins only %>
       <% if policy(@board).invite? %>
-      <div class="relative" data-controller="dropdown">
+      <div class="relative" data-controller="dropdown" data-dropdown-manual-value="true">
         <button data-action="dropdown#toggle"
                 class="text-sm bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg font-medium transition-colors flex items-center gap-1">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -96,7 +106,7 @@
                       <%= button_to board_membership_path(membership), method: :delete,
                             data: { turbo_stream: true, turbo_confirm: t("boards.remove_member_confirm", name: membership.user.display_name) },
                             form: { class: "contents" },
-                            class: "opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-500 transition-all cursor-pointer text-lg leading-none" do %>×<% end %>
+                            class: "text-gray-300 hover:text-red-500 transition-colors cursor-pointer text-lg leading-none" do %>×<% end %>
                     <% end %>
                   </div>
                 </div>

@@ -4,9 +4,17 @@
   <% board_members.each do |member| %>
     <% membership = memberships_by_user_id[member.id] %>
     <div class="flex items-center gap-2 py-0.5">
-      <div class="w-6 h-6 rounded-full bg-indigo-400 text-white text-xs flex items-center justify-center font-medium flex-shrink-0">
-        <%= member.initials %>
-      </div>
+      <% if member.avatar.attached? %>
+        <img src="<%= url_for(member.avatar) %>" alt="<%= member.display_name %>"
+             class="w-6 h-6 rounded-full object-cover flex-shrink-0">
+      <% elsif member.avatar_url.present? %>
+        <img src="<%= member.avatar_url %>" alt="<%= member.display_name %>"
+             class="w-6 h-6 rounded-full object-cover flex-shrink-0">
+      <% else %>
+        <div class="w-6 h-6 rounded-full bg-indigo-400 text-white text-xs flex items-center justify-center font-medium flex-shrink-0">
+          <%= member.initials %>
+        </div>
+      <% end %>
       <span class="text-xs flex-1 truncate"><%= member.display_name %></span>
       <% if membership %>
         <%= button_to card_membership_path(membership), method: :delete,

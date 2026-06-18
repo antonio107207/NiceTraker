@@ -1,7 +1,7 @@
 <%= turbo_frame_tag "modal" do %>
   <div class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
        data-controller="dialog-modal"
-       data-action="click->dialog-modal#backdropClose keydown.esc@window->dialog-modal#close">
+       data-action="keydown.esc@window->dialog-modal#close">
     <div class="glass-panel bg-white/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-gray-900/20 w-full max-w-md overflow-hidden">
       <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100/60">
         <h2 class="text-base font-semibold text-gray-900"><%= t("workspaces.new_title") %></h2>
