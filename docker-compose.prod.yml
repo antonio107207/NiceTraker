@@ -33,6 +33,7 @@ services:
       RAILS_LOG_TO_STDOUT: "true"
       RAILS_LOG_LEVEL: ${RAILS_LOG_LEVEL:-info}
     volumes:
+      - ./log:/rails/log
       - storage:/rails/storage
     ports:
       - "3001:80"
@@ -58,6 +59,7 @@ services:
       RAILS_LOG_LEVEL: ${RAILS_LOG_LEVEL:-info}
     command: ["bundle", "exec", "rails", "solid_queue:start"]
     volumes:
+      - ./log:/rails/log
       - storage:/rails/storage
     depends_on:
       postgres:
