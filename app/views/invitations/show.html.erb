@@ -16,13 +16,17 @@
     </div>
 
     <div class="space-y-3">
-      <%= button_to accept_invitation_path(@invitation, token: @invitation.token),
+      <%= button_to accept_invitation_path(@invitation),
             method: :post,
             class: "w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-semibold transition-colors" do %>
         <%= t("invitations.accept") %>
       <% end %>
 
-      <%= button_to decline_invitation_path(@invitation, token: @invitation.token),
+      <% unless user_signed_in? %>
+        <p class="text-xs text-gray-400 text-center"><%= t("invitations.sign_in_hint") %></p>
+      <% end %>
+
+      <%= button_to decline_invitation_path(@invitation),
             method: :post,
             class: "w-full border border-gray-300 hover:bg-gray-50 text-gray-700 py-3 rounded-xl font-medium transition-colors" do %>
         <%= t("invitations.decline") %>

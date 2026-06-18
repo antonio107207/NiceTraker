@@ -1,9 +1,23 @@
-<%= turbo_stream.replace "flash" do %>
-  <div id="flash-notice"
-       class="fixed top-4 right-4 z-50 flex items-center gap-2 rounded-lg bg-green-500 px-4 py-3 text-white shadow-lg"
-       data-controller="flash"
-       data-flash-target="message">
-    Invitation sent to <%= params[:email] %>
-    <button class="ml-2 text-white/80 hover:text-white" data-action="flash#dismiss">✕</button>
+<turbo-stream action="addClass" target="invite_panel" classes="hidden"></turbo-stream>
+
+<%= turbo_stream.prepend "flash_messages" do %>
+  <% bg = @flash_type == :alert ? "bg-red-500" : "bg-green-500" %>
+  <div class="fixed top-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm z-50 flex items-center gap-2 rounded-lg <%= bg %> px-4 py-3 text-white shadow-lg"
+       data-controller="flash">
+    <%= @flash_message %>
+    <button class="ml-auto text-white/80 hover:text-white" data-action="flash#dismiss">✕</button>
   </div>
+<% end %>
+
+<% if @pending_invitations %>
+  <%= turbo_stream.replace "pending_invitations_section" do %>
+    <%= render "pending_invitations", pending_invitations: @pending_invitations %>
+  <% end %>
+
+  <%= turbo_stream.replace "invite_email_field" do %>
+    <input type="email" name="email" id="invite_email_field"
+           placeholder="<%= t("boards.email_placeholder") %>"
+           required
+           class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none mb-2">
+  <% end %>
 <% end %>

@@ -231,6 +231,7 @@ uk:
     message_html: "<strong>%{inviter}</strong> запросив вас приєднатися до <strong>%{board}</strong>"
     accept: "Прийняти запрошення"
     decline: "Відхилити"
+    sign_in_hint: "Потрібно увійти або створити акаунт"
 
   flash:
     not_authorized: "У вас немає прав для виконання цієї дії."

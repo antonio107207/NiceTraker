@@ -231,6 +231,7 @@ en:
     message_html: "<strong>%{inviter}</strong> invited you to join <strong>%{board}</strong>"
     accept: "Accept Invitation"
     decline: "Decline"
+    sign_in_hint: "You'll need to sign in or create an account first"
 
   flash:
     not_authorized: "You are not authorized to perform this action."

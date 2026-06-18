@@ -11,6 +11,10 @@ class Invitation < ApplicationRecord
 
   before_validation :generate_token, on: :create
 
+  def to_param
+    token
+  end
+
   scope :active, -> { pending.where("expires_at > ?", Time.current) }
 
   def expired?

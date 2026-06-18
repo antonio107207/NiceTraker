@@ -21,26 +21,28 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="h-full flex flex-col bg-gray-50 dark:bg-gray-900 transition-colors duration-200" data-controller="flash">
+  <body class="h-full flex flex-col bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
     <%= render "layouts/navbar" if user_signed_in? %>
 
-    <% if notice.present? %>
-      <div id="flash-notice"
-           class="fixed top-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm z-50 flex items-center gap-2 rounded-lg bg-green-500 px-4 py-3 text-white shadow-lg"
-           data-flash-target="message">
-        <%= notice %>
-        <button class="ml-auto text-white/80 hover:text-white" data-action="flash#dismiss">✕</button>
-      </div>
-    <% end %>
+    <div id="flash_messages" class="contents">
+      <% if notice.present? %>
+        <div id="flash-notice"
+             class="fixed top-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm z-50 flex items-center gap-2 rounded-lg bg-green-500 px-4 py-3 text-white shadow-lg"
+             data-controller="flash">
+          <%= notice %>
+          <button class="ml-auto text-white/80 hover:text-white" data-action="flash#dismiss">✕</button>
+        </div>
+      <% end %>
 
-    <% if alert.present? %>
-      <div id="flash-alert"
-           class="fixed top-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm z-50 flex items-center gap-2 rounded-lg bg-red-500 px-4 py-3 text-white shadow-lg"
-           data-flash-target="message">
-        <%= alert %>
-        <button class="ml-auto text-white/80 hover:text-white" data-action="flash#dismiss">✕</button>
-      </div>
-    <% end %>
+      <% if alert.present? %>
+        <div id="flash-alert"
+             class="fixed top-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm z-50 flex items-center gap-2 rounded-lg bg-red-500 px-4 py-3 text-white shadow-lg"
+             data-controller="flash">
+          <%= alert %>
+          <button class="ml-auto text-white/80 hover:text-white" data-action="flash#dismiss">✕</button>
+        </div>
+      <% end %>
+    </div>
 
     <main class="flex-1 flex flex-col <%= 'pt-14' if user_signed_in? %>">
       <%= yield %>

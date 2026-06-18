@@ -59,23 +59,28 @@ class BoardsController < ApplicationController
     role  = params[:role].presence || "member"
 
     if @board.members.exists?(email: email)
-      msg = t("flash.already_member", email: email)
+      @flash_type    = :alert
+      @flash_message = t("flash.already_member", email: email)
       respond_to do |format|
-        format.html { redirect_to board_path(@board), alert: msg }
-        format.turbo_stream { render turbo_stream: turbo_stream.replace("flash_container", partial: "layouts/flash", locals: { alert: msg }) }
+        format.html { redirect_to board_path(@board), alert: @flash_message }
+        format.turbo_stream { render :invite }
       end
       return
     end
 
-    invitation = @board.invitations.find_or_initialize_by(email: email, status: :pending)
-    invitation.assign_attributes(inviter: current_user, role: role)
-    invitation.save!
+    @invitation = @board.invitations.find_or_initialize_by(email: email, status: :pending)
+    @invitation.assign_attributes(inviter: current_user, role: role)
+    @invitation.save!
+    @pending_invitations = @board.invitations.active
 
-    InvitationMailer.invite(invitation).deliver_later
+    InvitationMailer.invite(@invitation).deliver_later
+
+    @flash_type    = :notice
+    @flash_message = t("flash.invitation_sent", email: email)
 
     respond_to do |format|
-      format.html { redirect_to board_path(@board), notice: t("flash.invitation_sent", email: email) }
-      format.turbo_stream
+      format.html { redirect_to board_path(@board), notice: @flash_message }
+      format.turbo_stream { render :invite }
     end
   end
 
