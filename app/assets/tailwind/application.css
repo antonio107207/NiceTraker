@@ -34,6 +34,23 @@
   }
 }
 
+@layer components {
+  /* Glass panel — floating dropdowns, modals, popovers.
+     Provides the translucent border + top-edge light highlight that simulates glass. */
+  .glass-panel {
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+  }
+  .glass-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.22) 0%, transparent 48%);
+    pointer-events: none;
+  }
+}
+
 @layer base {
   .sortable-ghost {
     opacity: 0.4;

@@ -3,7 +3,7 @@
        data-controller="modal"
        data-action="keydown.esc@window->modal#close">
 
-    <div class="bg-white/95 backdrop-blur-2xl sm:rounded-2xl shadow-2xl shadow-gray-900/20 w-full max-w-2xl h-full sm:max-h-[90vh] flex flex-col overflow-hidden"
+    <div class="glass-panel bg-white/95 dark:bg-gray-900/95 backdrop-blur-2xl sm:rounded-2xl shadow-2xl shadow-gray-900/20 w-full max-w-2xl h-full sm:max-h-[90vh] flex flex-col overflow-hidden"
          data-modal-target="dialog">
 
       <%# Cover (outside scroll, part of sticky header area) %>
@@ -12,16 +12,16 @@
       <% end %>
 
       <%# Sticky header %>
-      <div class="flex-shrink-0 px-4 sm:px-6 pt-4 sm:pt-5 pb-4 border-b border-gray-100/60 bg-white/80 backdrop-blur-sm">
+      <div class="flex-shrink-0 px-4 sm:px-6 pt-4 sm:pt-5 pb-4 border-b border-gray-100/60 dark:border-gray-700/60 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
         <div class="flex items-start justify-between gap-4">
-          <h2 class="text-xl font-bold text-gray-900 flex-1 leading-snug"
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white flex-1 leading-snug"
               data-controller="editable"
               data-editable-url-value="<%= card_path(@card) %>"
               data-editable-field-value="card[title]">
             <%= @card.title %>
           </h2>
           <button type="button" data-action="click->modal#close"
-                  class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors text-lg leading-none">
+                  class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:text-gray-300 dark:hover:bg-gray-700 transition-colors text-lg leading-none">
             ✕
           </button>
         </div>
@@ -30,7 +30,7 @@
           <div class="flex items-center gap-2 mt-2"
                data-controller="clipboard"
                data-clipboard-text-value="<%= "feature/#{@card.identifier}-#{@card.title.downcase.gsub(/[^a-z0-9]+/, '-').gsub(/^-|-$/, '')}" %>">
-            <span class="text-xs font-mono bg-gray-100 text-gray-600 px-2 py-0.5 rounded font-medium"><%= @card.identifier %></span>
+            <span class="text-xs font-mono bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 py-0.5 rounded font-medium"><%= @card.identifier %></span>
             <button type="button" data-action="click->clipboard#copy"
                     class="text-xs text-indigo-500 hover:text-indigo-700 flex items-center gap-1 transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -42,7 +42,7 @@
           </div>
         <% end %>
 
-        <p id="card_in_list_<%= @card.id %>" class="text-xs text-gray-400 mt-1"><%= t("cards.in_list", name: @card.list.name) %></p>
+        <p id="card_in_list_<%= @card.id %>" class="text-xs text-gray-400 dark:text-gray-500 mt-1"><%= t("cards.in_list", name: @card.list.name) %></p>
       </div>
 
       <%# Scrollable body %>
@@ -121,7 +121,7 @@
                             data: { mention_target: "input",
                                     action: "input->mention#onInput keydown->mention#onKeydown" } %>
                       <div data-mention-target="dropdown"
-                           class="hidden absolute left-0 right-0 bottom-full mb-1 bg-white/90 backdrop-blur-xl border border-white/60 rounded-lg shadow-lg shadow-gray-900/10 z-50 max-h-40 overflow-y-auto">
+                           class="hidden absolute left-0 right-0 bottom-full mb-1 glass-panel bg-white/90 backdrop-blur-xl rounded-lg shadow-lg shadow-gray-900/10 z-50 max-h-40 overflow-y-auto">
                         <div data-mention-target="list"></div>
                       </div>
                       <%= f.submit t("common.save"), class: "mt-1 bg-indigo-600 text-white text-sm px-3 py-1 rounded-lg hover:bg-indigo-700 cursor-pointer" %>
@@ -143,7 +143,7 @@
                       class="w-full text-left bg-gray-100 hover:bg-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors">
                 <%= t("cards.labels_btn") %>
               </button>
-              <div data-dropdown-target="menu" class="hidden mt-1 p-2 bg-white/85 backdrop-blur-xl rounded-lg border border-white/60 shadow-lg shadow-gray-900/10">
+              <div data-dropdown-target="menu" class="hidden mt-1 p-2 glass-panel bg-white/85 backdrop-blur-xl rounded-lg shadow-lg shadow-gray-900/10">
                 <%= render "cards/labels_panel", card: @card, labels: @labels %>
               </div>
             </div>
@@ -153,7 +153,7 @@
                       class="w-full text-left bg-gray-100 hover:bg-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors">
                 <%= t("cards.members_btn") %>
               </button>
-              <div data-dropdown-target="menu" class="hidden mt-1 p-2 bg-white/85 backdrop-blur-xl rounded-lg border border-white/60 shadow-lg shadow-gray-900/10">
+              <div data-dropdown-target="menu" class="hidden mt-1 p-2 glass-panel bg-white/85 backdrop-blur-xl rounded-lg shadow-lg shadow-gray-900/10">
                 <%= render "cards/members_panel", card: @card, board_members: @board_members %>
               </div>
             </div>
@@ -163,7 +163,7 @@
                       class="w-full text-left bg-gray-100 hover:bg-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors">
                 <%= t("cards.dates_btn") %>
               </button>
-              <div data-dropdown-target="menu" class="hidden mt-1 p-3 bg-white/85 backdrop-blur-xl rounded-lg border border-white/60 shadow-lg shadow-gray-900/10">
+              <div data-dropdown-target="menu" class="hidden mt-1 p-3 glass-panel bg-white/85 backdrop-blur-xl rounded-lg shadow-lg shadow-gray-900/10">
                 <p class="text-xs text-gray-500 font-medium mb-2"><%= t("cards.due_date") %></p>
                 <%= form_with url: card_path(@card), method: :patch, scope: :card, data: { turbo_stream: true } do |f| %>
                   <%= f.date_field :due_date, value: @card.due_date&.to_date,
@@ -186,7 +186,7 @@
                       class="w-full text-left bg-gray-100 hover:bg-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors">
                 <%= t("cards.attachment_btn") %>
               </button>
-              <div data-dropdown-target="menu" class="hidden mt-1 p-3 bg-white/85 backdrop-blur-xl rounded-lg border border-white/60 shadow-lg shadow-gray-900/10">
+              <div data-dropdown-target="menu" class="hidden mt-1 p-3 glass-panel bg-white/85 backdrop-blur-xl rounded-lg shadow-lg shadow-gray-900/10">
                 <p class="text-xs text-gray-500 font-medium mb-2"><%= t("cards.attach_file") %></p>
                 <%= form_with url: card_attachments_path(@card), data: { turbo_stream: true } do |f| %>
                   <%= f.file_field :attachments, multiple: true,
@@ -201,7 +201,7 @@
                       class="w-full text-left bg-gray-100 hover:bg-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors">
                 <%= t("cards.checklist_btn") %>
               </button>
-              <div data-dropdown-target="menu" class="hidden mt-1 p-3 bg-white/85 backdrop-blur-xl rounded-lg border border-white/60 shadow-lg shadow-gray-900/10">
+              <div data-dropdown-target="menu" class="hidden mt-1 p-3 glass-panel bg-white/85 backdrop-blur-xl rounded-lg shadow-lg shadow-gray-900/10">
                 <p class="text-xs text-gray-500 font-medium mb-2"><%= t("cards.add_checklist") %></p>
                 <%= form_with url: card_checklists_path(@card), scope: :checklist,
                       data: { turbo_stream: true, controller: "reset-form", action: "turbo:submit-end->reset-form#reset" } do |f| %>
@@ -219,7 +219,7 @@
                       class="w-full text-left bg-gray-100 hover:bg-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors">
                 <%= t("card_relations.sidebar_btn") %>
               </button>
-              <div data-dropdown-target="menu" class="hidden mt-2 p-2 bg-white/85 backdrop-blur-xl rounded-lg border border-white/60 shadow-lg shadow-gray-900/10">
+              <div data-dropdown-target="menu" class="hidden mt-2 p-2 glass-panel bg-white/85 backdrop-blur-xl rounded-lg shadow-lg shadow-gray-900/10">
                 <%= form_with url: search_card_card_relations_path(@card), method: :get,
                       class: "space-y-3",
                       data: { turbo_frame: "card_relation_search_#{@card.id}" } do |f| %>
@@ -250,7 +250,7 @@
                       class="w-full text-left bg-gray-100 hover:bg-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors">
                 <%= t("time_tracking.sidebar_btn") %>
               </button>
-              <div data-dropdown-target="menu" class="hidden mt-1 p-3 bg-white/85 backdrop-blur-xl rounded-lg border border-white/60 shadow-lg shadow-gray-900/10 space-y-4">
+              <div data-dropdown-target="menu" class="hidden mt-1 p-3 glass-panel bg-white/85 backdrop-blur-xl rounded-lg shadow-lg shadow-gray-900/10 space-y-4">
 
                 <%# Estimate %>
                 <div>
@@ -314,7 +314,7 @@
                       class="w-full text-left bg-gray-100 hover:bg-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors">
                 <%= t("cards.move_btn") %>
               </button>
-              <div data-dropdown-target="menu" class="hidden mt-1 p-3 bg-white/85 backdrop-blur-xl rounded-lg border border-white/60 shadow-lg shadow-gray-900/10">
+              <div data-dropdown-target="menu" class="hidden mt-1 p-3 glass-panel bg-white/85 backdrop-blur-xl rounded-lg shadow-lg shadow-gray-900/10">
                 <p class="text-xs text-gray-500 font-medium mb-2"><%= t("cards.move_to_list") %></p>
                 <%= form_with model: @card, data: { turbo_stream: true } do |f| %>
                   <%= f.select :list_id,

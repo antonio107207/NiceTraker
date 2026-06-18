@@ -40,7 +40,7 @@
 
         <div id="invite_panel"
              data-dropdown-target="menu"
-             class="hidden absolute right-0 top-10 w-[22rem] max-w-[calc(100vw-1rem)] bg-white/85 backdrop-blur-xl backdrop-saturate-150 rounded-2xl shadow-2xl shadow-gray-900/15 z-50 text-gray-800 border border-white/60 overflow-hidden">
+             class="hidden absolute right-0 top-10 w-[22rem] max-w-[calc(100vw-1rem)] glass-panel bg-white/85 backdrop-blur-xl backdrop-saturate-150 rounded-2xl shadow-2xl shadow-gray-900/15 z-50 text-gray-800 overflow-hidden">
 
           <%# Header %>
           <div class="px-5 pt-5 pb-4 border-b border-gray-100">
@@ -125,7 +125,7 @@
     <% if policy(@board).manage_lists? %>
     <div class="px-3 pb-5 sm:absolute sm:bottom-5 sm:left-4 sm:z-10 sm:px-0 sm:pb-0"
          data-controller="toggle-form" id="add_list_area">
-      <div data-toggle-form-target="form" class="hidden w-full sm:w-72 bg-white/85 backdrop-blur-xl rounded-xl p-3 shadow-2xl shadow-gray-900/15 border border-white/60 mb-2">
+      <div data-toggle-form-target="form" class="hidden w-full sm:w-72 glass-panel bg-white/85 backdrop-blur-xl rounded-xl p-3 shadow-2xl shadow-gray-900/15 mb-2">
         <%= form_with url: board_lists_path(@board), scope: :list,
               data: { turbo_stream: true, controller: "reset-form", action: "turbo:submit-end->reset-form#reset" } do |f| %>
           <%= f.text_field :name, placeholder: t("boards.list_name_placeholder"),

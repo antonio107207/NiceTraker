@@ -1,8 +1,8 @@
 <turbo-stream action="addClass" target="invite_panel" classes="hidden"></turbo-stream>
 
 <%= turbo_stream.prepend "flash_messages" do %>
-  <% bg = @flash_type == :alert ? "bg-red-500" : "bg-green-500" %>
-  <div class="fixed top-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm z-50 flex items-center gap-2 rounded-lg <%= bg %> px-4 py-3 text-white shadow-lg"
+  <% bg = @flash_type == :alert ? "bg-red-500/90 shadow-red-900/20" : "bg-green-500/90 shadow-green-900/20" %>
+  <div class="fixed top-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm z-50 flex items-center gap-2 rounded-lg backdrop-blur-md <%= bg %> px-4 py-3 text-white shadow-lg"
        data-controller="flash">
     <%= @flash_message %>
     <button class="ml-auto text-white/80 hover:text-white" data-action="flash#dismiss">✕</button>
