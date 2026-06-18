@@ -1,4 +1,20 @@
-<div class="max-w-lg mx-auto px-6 py-12">
-  <h1 class="text-2xl font-bold text-gray-900 mb-6"><%= t("workspaces.edit_title") %></h1>
-  <%= render "form", workspace: @workspace %>
-</div>
+<%= turbo_frame_tag "modal" do %>
+  <div class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+       data-controller="dialog-modal"
+       data-action="click->dialog-modal#backdropClose keydown.esc@window->dialog-modal#close">
+    <div class="glass-panel bg-white/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-gray-900/20 w-full max-w-md overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100/60">
+        <h2 class="text-base font-semibold text-gray-900"><%= t("workspaces.edit_title") %></h2>
+        <button type="button" data-action="click->dialog-modal#close"
+                class="w-7 h-7 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="px-6 py-5">
+        <%= render "form", workspace: @workspace %>
+      </div>
+    </div>
+  </div>
+<% end %>

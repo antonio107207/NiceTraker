@@ -8,14 +8,16 @@ class NotificationsController < ApplicationController
     notification.mark_read!
     respond_to do |format|
       format.turbo_stream do
+        remaining = current_user.notifications.unread.count
         render turbo_stream: [
-          turbo_stream.replace("notification_#{notification.id}",
-            partial: "notifications/notification",
-            locals: { notification: notification }),
+          turbo_stream.remove("notification_#{notification.id}"),
           turbo_stream.replace("notification_badge",
             partial: "notifications/badge",
-            locals: { count: current_user.notifications.unread.count })
-        ]
+            locals: { count: remaining }),
+          (turbo_stream.replace("notifications_list",
+            partial: "notifications/list",
+            locals: { notifications: [] }) if remaining.zero?)
+        ].compact
       end
       format.html { redirect_back fallback_location: root_path }
     end
@@ -31,7 +33,7 @@ class NotificationsController < ApplicationController
             locals: { count: 0 }),
           turbo_stream.replace("notifications_list",
             partial: "notifications/list",
-            locals: { notifications: current_user.notifications.recent.includes(:actor, :notifiable) })
+            locals: { notifications: [] })
         ]
       end
       format.html { redirect_back fallback_location: root_path }

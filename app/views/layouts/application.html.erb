@@ -9,6 +9,9 @@
     <%= csp_meta_tag %>
     <%= yield :head %>
     <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..700;1,14..32,300..700&display=swap" rel="stylesheet">
     <%# Inline script prevents flash of wrong theme before JS loads %>
     <script>
       (function(){
@@ -17,7 +20,7 @@
         if(d)document.documentElement.classList.add('dark');
       })();
     </script>
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload", preload_links_header: false %>
     <%= javascript_importmap_tags %>
   </head>
 
@@ -30,7 +33,7 @@
     <div id="flash_messages" class="contents">
       <% if notice.present? %>
         <div id="flash-notice"
-             class="fixed top-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm z-50 flex items-center gap-2 rounded-lg bg-green-500 px-4 py-3 text-white shadow-lg"
+             class="fixed top-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm z-50 flex items-center gap-2 rounded-lg bg-green-500/90 backdrop-blur-md px-4 py-3 text-white shadow-lg shadow-green-900/20"
              data-controller="flash">
           <%= notice %>
           <button class="ml-auto text-white/80 hover:text-white" data-action="flash#dismiss">✕</button>
@@ -39,7 +42,7 @@
 
       <% if alert.present? %>
         <div id="flash-alert"
-             class="fixed top-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm z-50 flex items-center gap-2 rounded-lg bg-red-500 px-4 py-3 text-white shadow-lg"
+             class="fixed top-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm z-50 flex items-center gap-2 rounded-lg bg-red-500/90 backdrop-blur-md px-4 py-3 text-white shadow-lg shadow-red-900/20"
              data-controller="flash">
           <%= alert %>
           <button class="ml-auto text-white/80 hover:text-white" data-action="flash#dismiss">✕</button>
@@ -51,6 +54,8 @@
       <%= yield %>
     </main>
 
+    <%# Dialog modal portal — Turbo Frame loads workspace/board modals here %>
+    <turbo-frame id="modal"></turbo-frame>
     <%# Card modal portal — Turbo Frame renders card detail here %>
     <%= turbo_frame_tag "card_modal" %>
   </body>
