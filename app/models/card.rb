@@ -43,6 +43,7 @@ class Card < ApplicationRecord
   scope :active, -> { where(archived_at: nil) }
   scope :due_soon, -> { where("due_date <= ? AND due_completed = false", 2.days.from_now) }
   scope :overdue, -> { where("due_date < ? AND due_completed = false", Time.current) }
+  scope :accessible_to, ->(user) { joins(:board).where(boards: { id: user.boards.select(:id) }) }
 
   after_create_commit  :broadcast_card_create
   after_update_commit  :broadcast_card_update
@@ -87,9 +88,13 @@ class Card < ApplicationRecord
 
   def assign_number
     return if number.present?
-    board.with_lock do
-      self.number = (board.cards.maximum(:number) || 0) + 1
-    end
+    board_id_val = board_id || board.id
+    # pg_advisory_xact_lock holds until the whole transaction commits (including INSERT),
+    # unlike board.with_lock which releases at savepoint — preventing the race condition.
+    self.class.connection.execute(
+      "SELECT pg_advisory_xact_lock(1, #{board_id_val.to_i})"
+    )
+    self.number = (self.class.where(board_id: board_id_val).maximum(:number) || 0) + 1
   end
 
   def notify_members_of_update

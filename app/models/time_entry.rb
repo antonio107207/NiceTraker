@@ -5,6 +5,7 @@ class TimeEntry < ApplicationRecord
   validates :minutes, presence: true, numericality: { greater_than: 0, only_integer: true }
 
   scope :ordered, -> { order(logged_at: :desc) }
+  scope :accessible_to, ->(user) { joins(card: :board).where(boards: { id: user.boards.select(:id) }) }
 
   def self.parse_duration(str)
     return nil if str.blank?

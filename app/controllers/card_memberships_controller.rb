@@ -30,15 +30,11 @@ class CardMembershipsController < ApplicationController
   private
 
   def set_card
-    @card = Card.joins(:board)
-                .where(boards: { id: current_user.boards.select(:id) })
-                .find(params[:card_id])
+    @card = Card.accessible_to(current_user).find(params[:card_id])
   end
 
   def set_membership
-    @membership = CardMembership.joins(card: :board)
-                                .where(boards: { id: current_user.boards.select(:id) })
-                                .find(params[:id])
+    @membership = CardMembership.accessible_to(current_user).find(params[:id])
     @card = @membership.card
   end
 end

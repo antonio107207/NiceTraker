@@ -6,6 +6,8 @@ class Comment < ApplicationRecord
 
   validates :body, presence: true
 
+  scope :accessible_to, ->(user) { joins(card: :board).where(boards: { id: user.boards.select(:id) }) }
+
   after_create_commit :notify_mentions
 
   MENTION_RE = /\@\[([^\]]+)\]/

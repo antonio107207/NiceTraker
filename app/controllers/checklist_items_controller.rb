@@ -29,15 +29,11 @@ class ChecklistItemsController < ApplicationController
   private
 
   def set_checklist
-    @checklist = Checklist.joins(card: :board)
-                          .where(boards: { id: current_user.boards.select(:id) })
-                          .find(params[:checklist_id])
+    @checklist = Checklist.accessible_to(current_user).find(params[:checklist_id])
   end
 
   def set_item
-    @item = ChecklistItem.joins(checklist: { card: :board })
-                         .where(boards: { id: current_user.boards.select(:id) })
-                         .find(params[:id])
+    @item = ChecklistItem.accessible_to(current_user).find(params[:id])
     @checklist = @item.checklist
   end
 

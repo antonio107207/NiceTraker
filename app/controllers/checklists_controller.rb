@@ -22,11 +22,11 @@ class ChecklistsController < ApplicationController
   private
 
   def set_card
-    @card = Card.joins(:board).where(boards: { id: current_user.boards.select(:id) }).find(params[:card_id])
+    @card = Card.accessible_to(current_user).find(params[:card_id])
   end
 
   def set_checklist
-    @checklist = Checklist.joins(card: :board).where(boards: { id: current_user.boards.select(:id) }).find(params[:id])
+    @checklist = Checklist.accessible_to(current_user).find(params[:id])
     @card = @checklist.card
   end
 

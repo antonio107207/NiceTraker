@@ -55,31 +55,20 @@ class BoardsController < ApplicationController
 
   def invite
     authorize @board
-    email = params[:email].to_s.strip
-    role  = params[:role].presence || "member"
+    result = BoardInvitationService.call(
+      board:   @board,
+      email:   params[:email].to_s.strip,
+      role:    params[:role].presence || "member",
+      inviter: current_user
+    )
 
-    if @board.members.exists?(email: email)
-      @flash_type    = :alert
-      @flash_message = t("flash.already_member", email: email)
-      respond_to do |format|
-        format.html { redirect_to board_path(@board), alert: @flash_message }
-        format.turbo_stream { render :invite }
-      end
-      return
-    end
-
-    @invitation = @board.invitations.find_or_initialize_by(email: email, status: :pending)
-    @invitation.assign_attributes(inviter: current_user, role: role)
-    @invitation.save!
+    @invitation          = result.invitation
     @pending_invitations = @board.invitations.active
-
-    InvitationMailer.invite(@invitation).deliver_later
-
-    @flash_type    = :notice
-    @flash_message = t("flash.invitation_sent", email: email)
+    @flash_type          = result.success? ? :notice : :alert
+    @flash_message       = t(result.flash_key, **result.flash_params)
 
     respond_to do |format|
-      format.html { redirect_to board_path(@board), notice: @flash_message }
+      format.html { redirect_to board_path(@board), @flash_type => @flash_message }
       format.turbo_stream { render :invite }
     end
   end

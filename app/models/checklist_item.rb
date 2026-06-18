@@ -8,6 +8,7 @@ class ChecklistItem < ApplicationRecord
 
   scope :completed, -> { where(completed: true) }
   scope :incomplete, -> { where(completed: false) }
+  scope :accessible_to, ->(user) { joins(checklist: { card: :board }).where(boards: { id: user.boards.select(:id) }) }
 
   def completed?
     completed == true
