@@ -1,0 +1,42 @@
+<% content_for :title, "#{@board.name} — #{t('boards.archive_title')}" %>
+
+<div class="max-w-3xl mx-auto px-4 py-8">
+  <div class="flex items-center gap-4 mb-6">
+    <%= link_to board_path(@board), class: "text-indigo-600 hover:text-indigo-800 text-sm flex items-center gap-1" do %>
+      ← <%= @board.name %>
+    <% end %>
+    <h1 class="text-xl font-bold text-gray-900"><%= t("boards.archive_title") %></h1>
+  </div>
+
+  <% if @archived_cards.empty? %>
+    <div class="text-center py-16 text-gray-400">
+      <p class="text-4xl mb-3">📦</p>
+      <p class="text-base"><%= t("boards.archive_empty") %></p>
+    </div>
+  <% else %>
+    <div class="space-y-2" id="archived_cards_list">
+      <% @archived_cards.each do |card| %>
+        <div id="archived_card_<%= card.id %>"
+             class="bg-white rounded-xl shadow-sm border border-gray-100 px-4 py-3 flex items-center justify-between gap-4">
+          <div class="min-w-0 flex-1">
+            <p class="text-sm font-medium text-gray-800 truncate"><%= card.title %></p>
+            <p class="text-xs text-gray-400 mt-0.5">
+              <%= t("boards.archived_in_list", list: card.list.name) %>
+              · <%= t("boards.archived_at", time: time_ago_in_words(card.archived_at)) %>
+            </p>
+          </div>
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <% if policy(card).unarchive? %>
+              <%= button_to unarchive_card_path(card), method: :patch,
+                    data: { turbo_stream: true },
+                    form: { class: "contents" },
+                    class: "text-xs bg-indigo-50 text-indigo-700 hover:bg-indigo-100 px-3 py-1.5 rounded-lg font-medium transition-colors cursor-pointer" do %>
+                <%= t("boards.restore_btn") %>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

@@ -1,7 +1,10 @@
 <div id="card_<%= card.id %>"
      class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow mb-2 cursor-pointer group"
      data-card-id="<%= card.id %>"
-     data-move-url="<%= move_card_path(card) %>">
+     data-move-url="<%= move_card_path(card) %>"
+     data-member-ids="<%= card.members.map(&:id).join(",") %>"
+     data-label-ids="<%= card.labels.map(&:id).join(",") %>"
+     data-due-status="<%= card.due_date.nil? ? "none" : (card.due_completed ? "done" : (card.due_date < Time.current ? "overdue" : (card.due_date <= 2.days.from_now ? "due_soon" : "on_track"))) %>">
 
   <% if card.cover_color.present? %>
     <div class="h-8 rounded-t-lg" style="background-color: <%= card.cover_color %>"></div>

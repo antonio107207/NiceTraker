@@ -130,6 +130,7 @@
                 <% end %>
               <% end %>
             </div>
+
           </div>
 
           <%# Sidebar — right 1/3 %>
@@ -168,15 +169,16 @@
                 <%= form_with url: card_path(@card), method: :patch, scope: :card, data: { turbo_stream: true } do |f| %>
                   <%= f.date_field :due_date, value: @card.due_date&.to_date,
                         class: "w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-indigo-500 mb-2" %>
-                  <div class="flex gap-2">
-                    <%= f.submit t("cards.save_date"), class: "flex-1 bg-indigo-600 text-white text-xs py-1.5 rounded hover:bg-indigo-700 cursor-pointer" %>
-                    <% if @card.due_date.present? %>
-                      <%= button_to card_path(@card), method: :patch,
-                            params: { card: { due_date: "" } },
-                            data: { turbo_stream: true },
-                            class: "flex-1 text-xs bg-gray-100 text-gray-600 py-1.5 rounded hover:bg-gray-200 cursor-pointer" do %><%= t("cards.clear_date") %><% end %>
-                    <% end %>
-                  </div>
+                  <%= f.submit t("cards.save_date"), class: "w-full bg-indigo-600 text-white text-xs py-1.5 rounded hover:bg-indigo-700 cursor-pointer" %>
+                <% end %>
+                <% if @card.due_date.present? %>
+                  <%= button_to card_path(@card), method: :patch,
+                        params: { card: { due_date: "" } },
+                        data: { turbo_stream: true },
+                        form: { class: "mt-1" },
+                        class: "w-full text-xs bg-gray-100 text-gray-600 py-1.5 rounded hover:bg-gray-200 cursor-pointer" do %>
+                    <%= t("cards.clear_date") %>
+                  <% end %>
                 <% end %>
               </div>
             </div>
@@ -332,6 +334,27 @@
               <%= t("cards.archive_btn") %>
             <% end %>
             <% end %><%# end manage_cards? (actions) %>
+
+            <%# Change log — collapsible, always visible %>
+            <hr class="my-3">
+            <details class="group">
+              <summary class="flex items-center gap-1.5 text-xs font-semibold text-gray-400 uppercase tracking-wider cursor-pointer select-none list-none hover:text-gray-600 transition-colors">
+                <svg class="w-3 h-3 flex-shrink-0 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                </svg>
+                <%= t("cards.change_log") %>
+                <% if @activities.any? %>
+                  <span class="ml-auto font-normal normal-case tracking-normal text-gray-400"><%= @activities.size %></span>
+                <% end %>
+              </summary>
+              <div id="card_activities_<%= @card.id %>" class="mt-2">
+                <% if @activities.any? %>
+                  <%= render @activities %>
+                <% else %>
+                  <p class="text-xs text-gray-400 py-1 pl-0.5"><%= t("cards.no_changes") %></p>
+                <% end %>
+              </div>
+            </details>
           </div>
         </div>
       </div>

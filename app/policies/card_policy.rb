@@ -1,10 +1,11 @@
 class CardPolicy < ApplicationPolicy
-  def show?    = board_policy.show?
-  def create?  = board_policy.manage_cards?
-  def edit?    = board_member_or_assigned?
-  def update?  = board_member_or_assigned?
-  def destroy? = board_policy.manage_cards?
-  def move?    = board_policy.manage_cards?
+  def show?      = board_policy.show?
+  def create?    = board_policy.manage_cards?
+  def edit?      = board_member_or_assigned?
+  def update?    = board_member_or_assigned?
+  def destroy?   = board_policy.manage_cards?
+  def move?      = board_policy.manage_cards?
+  def unarchive? = board_policy.manage_cards?
 
   class Scope < ApplicationPolicy::Scope
     def resolve = scope.all

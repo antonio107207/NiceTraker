@@ -6,6 +6,7 @@ class BoardPolicy < ApplicationPolicy
   def destroy?       = board_admin?
   def invite?        = board_admin?
   def remove_member? = board_admin?
+  def archived?      = can_view?
 
   # Write actions on content — observer cannot perform these
   def manage_lists?   = board_contributor?

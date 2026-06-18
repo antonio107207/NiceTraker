@@ -1,6 +1,6 @@
 class BoardsController < ApplicationController
   before_action :set_workspace, only: %i[new create]
-  before_action :set_board,     only: %i[show edit update destroy invite]
+  before_action :set_board,     only: %i[show edit update destroy invite archived]
 
   def show
     authorize @board
@@ -51,6 +51,11 @@ class BoardsController < ApplicationController
     workspace = @board.workspace
     @board.destroy!
     redirect_to workspace, notice: t("flash.board_deleted")
+  end
+
+  def archived
+    authorize @board
+    @archived_cards = Card.where(board: @board).where.not(archived_at: nil).order(archived_at: :desc)
   end
 
   def invite

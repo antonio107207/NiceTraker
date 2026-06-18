@@ -1,0 +1,11 @@
+<%= t("reminder_mailer.greeting", name: @user.display_name) %>
+
+<%= t("reminder_mailer.due_date_subject", card: @card.title, date: @card.due_date.strftime("%d.%m")) %>
+
+<%= t("reminder_mailer.due_on", date: @card.due_date.strftime("%d.%m.%Y")) %>
+<%= @board.name %>
+
+<%= board_card_url(@card.board, @card) %>
+
+---
+<%= t("reminder_mailer.footer") %>
