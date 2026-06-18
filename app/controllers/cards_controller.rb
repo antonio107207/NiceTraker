@@ -58,7 +58,12 @@ class CardsController < ApplicationController
     authorize @card
     @card.archive!
     respond_to do |format|
-      format.turbo_stream { render turbo_stream: turbo_stream.remove("card_#{@card.id}") }
+      format.turbo_stream do
+        render turbo_stream: [
+          turbo_stream.remove("card_#{@card.id}"),
+          turbo_stream.update("card_modal", "")
+        ]
+      end
       format.html { redirect_to board_path(@card.board) }
     end
   end

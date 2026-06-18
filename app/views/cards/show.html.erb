@@ -181,7 +181,7 @@
               </div>
             </div>
 
-            <div data-controller="dropdown">
+            <div data-controller="dropdown" data-dropdown-manual-value="true">
               <button data-action="click->dropdown#toggle"
                       class="w-full text-left bg-gray-100 hover:bg-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors">
                 <%= t("cards.attachment_btn") %>
@@ -196,7 +196,7 @@
               </div>
             </div>
 
-            <div data-controller="dropdown">
+            <div data-controller="dropdown" data-dropdown-manual-value="true">
               <button data-action="click->dropdown#toggle"
                       class="w-full text-left bg-gray-100 hover:bg-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors">
                 <%= t("cards.checklist_btn") %>
@@ -214,7 +214,7 @@
             </div>
 
             <%# Link card dropdown %>
-            <div data-controller="dropdown">
+            <div data-controller="dropdown" data-dropdown-manual-value="true">
               <button data-action="click->dropdown#toggle"
                       class="w-full text-left bg-gray-100 hover:bg-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors">
                 <%= t("card_relations.sidebar_btn") %>
@@ -244,7 +244,7 @@
             </div>
 
             <%# Time tracking dropdown %>
-            <div data-controller="dropdown timer"
+            <div data-controller="dropdown timer" data-dropdown-manual-value="true"
                  data-timer-card-id-value="<%= @card.id %>">
               <button data-action="click->dropdown#toggle"
                       class="w-full text-left bg-gray-100 hover:bg-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors">
