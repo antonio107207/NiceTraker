@@ -9,6 +9,7 @@ class User < ApplicationRecord
   has_many :boards, through: :board_memberships
   has_many :owned_workspaces, class_name: "Workspace", foreign_key: :owner_id, dependent: :destroy
   has_many :comments, dependent: :destroy
+  has_many :notifications, foreign_key: :recipient_id, dependent: :destroy, inverse_of: :recipient
   has_one_attached :avatar
 
   validates :name, presence: true, allow_blank: true

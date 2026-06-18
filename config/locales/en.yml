@@ -276,3 +276,18 @@ en:
     delete_hint: "Once you delete your account, all your data will be permanently removed."
     delete_btn: "Delete my account"
     delete_confirm: "Are you sure? This action cannot be undone."
+  notifications:
+    title: "Notifications"
+    mark_all_read: "Mark all read"
+    empty: "No notifications"
+    open: "open →"
+    ago: "%{time} ago"
+    mentioned: "mentioned you in \"%{card}\""
+    assigned: "assigned you to \"%{card}\""
+    unassigned: "removed you from \"%{card}\""
+    card_updated: "updated \"%{card}\""
+    email_subjects:
+      mentioned: "%{actor} mentioned you in \"%{card}\""
+      assigned: "You were assigned to \"%{card}\""
+      unassigned: "You were removed from \"%{card}\""
+      card_updated: "\"%{card}\" — updated"

@@ -27,7 +27,7 @@
     <%= render checklist.checklist_items %>
   </div>
   <%= form_with url: checklist_checklist_items_path(checklist), scope: :checklist_item,
-        data: { turbo_stream: true } do |f| %>
+        data: { turbo_stream: true, controller: "reset-form", action: "turbo:submit-end->reset-form#reset" } do |f| %>
     <%= f.text_field :title, placeholder: t("checklists.add_item_placeholder"),
           class: "w-full text-sm px-3 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none mt-2" %>
   <% end %>

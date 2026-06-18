@@ -1,0 +1,5 @@
+<% if notifications.any? %>
+  <%= render notifications %>
+<% else %>
+  <p class="text-sm text-gray-400 text-center py-8"><%= t("notifications.empty") %></p>
+<% end %>

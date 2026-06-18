@@ -10,6 +10,7 @@ class Card < ApplicationRecord
   has_many :time_entries,   -> { order(logged_at: :desc) }, dependent: :destroy
   has_many :card_relations, dependent: :destroy
   has_many :activities, as: :trackable, dependent: :destroy
+  has_many :notifications, as: :notifiable, dependent: :destroy
   has_many_attached :attachments
   has_rich_text :description
 
@@ -17,7 +18,11 @@ class Card < ApplicationRecord
 
   validates :title, presence: true
 
+  attr_accessor :updated_by
+
   before_create :assign_number
+
+  NOTIFIABLE_CHANGES = %w[title description due_date due_completed cover_color].freeze
 
   def identifier
     "#{board.key}-#{number}"
@@ -41,6 +46,7 @@ class Card < ApplicationRecord
 
   after_create_commit  :broadcast_card_create
   after_update_commit  :broadcast_card_update
+  after_update_commit  :notify_members_of_update
   after_destroy_commit :broadcast_card_remove
 
   def move_to_list!(new_list, new_position = nil)
@@ -68,12 +74,35 @@ class Card < ApplicationRecord
     [ done, total ]
   end
 
+  def notify_assignment!(user, actor, action)
+    Notification.create!(
+      recipient:   user,
+      actor:       actor,
+      notifiable:  self,
+      action_type: action
+    )
+  end
+
   private
 
   def assign_number
     return if number.present?
     board.with_lock do
       self.number = (board.cards.maximum(:number) || 0) + 1
+    end
+  end
+
+  def notify_members_of_update
+    return unless updated_by
+    return if (saved_changes.keys & NOTIFIABLE_CHANGES).empty?
+
+    members.where.not(id: updated_by.id).each do |member|
+      Notification.create!(
+        recipient:   member,
+        actor:       updated_by,
+        notifiable:  self,
+        action_type: :card_updated
+      )
     end
   end
 
