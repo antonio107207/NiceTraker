@@ -68,6 +68,15 @@ en:
     add_list: "Add a list"
     list_name_placeholder: "List name"
     add_list_btn: "Add list"
+    archive_title: "Board Archive"
+    archive_empty: "Archive is empty — no cards have been archived yet."
+    archived_in_list: "in list %{list}"
+    archived_at: "%{time} ago"
+    restore_btn: "Restore"
+    filter_by: "Filter:"
+    filter_overdue: "⚠ Overdue"
+    filter_due_soon: "⏰ Due soon"
+    filter_clear: "Clear"
 
   lists:
     archive: "Archive list"
@@ -82,6 +91,8 @@ en:
     description: "Description"
     attachments: "Attachments"
     activity: "Activity"
+    change_log: "Change log"
+    no_changes: "No changes recorded yet."
     comment_placeholder: "Write a comment…"
     add_to_card: "Add to card"
     labels_btn: "🏷 Labels"
@@ -185,6 +196,23 @@ en:
       time_logged: "Time logged"
       completion: "Completion"
       boards_cnt: "boards"
+
+  activities:
+    card.title_changed: "changed the title from \"%{from}\""
+    card.due_date_set: "set a due date"
+    card.due_date_cleared: "removed the due date"
+    card.completed: "marked this card as done"
+    card.reopened: "reopened this card"
+    card.moved: "moved this card to \"%{to}\""
+    card.archived: "archived this card"
+    card.unarchived: "restored this card from archive"
+
+  reminder_mailer:
+    due_date_subject: "Reminder: \"%{card}\" is due on %{date}"
+    greeting: "Hi %{name},"
+    due_on: "Due: %{date}"
+    open_card: "Open card"
+    footer: "NiceTasker — you received this because you are assigned to this card"
 
   card_relations:
     sidebar_btn: "🔗 Link Card"

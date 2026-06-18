@@ -11,12 +11,18 @@ Rails.application.routes.draw do
 
     resources :workspaces do
       resources :boards, shallow: true do
-        member { post :invite }
+        member do
+          post :invite
+          get  :archived
+        end
         resources :labels, only: %i[create destroy], shallow: true
         resources :lists, shallow: true do
           member { patch :move }
           resources :cards, shallow: true do
-            member { patch :move }
+            member do
+              patch :move
+              patch :unarchive
+            end
             resources :card_labels,      only: %i[create destroy], shallow: true
             resources :card_memberships, only: %i[create destroy], shallow: true
             resources :card_relations,   only: %i[create] do

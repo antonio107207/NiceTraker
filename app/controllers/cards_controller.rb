@@ -1,12 +1,13 @@
 class CardsController < ApplicationController
   before_action :set_list, only: %i[create]
-  before_action :set_card, only: %i[show update destroy move]
+  before_action :set_card, only: %i[show update destroy move unarchive]
 
   def show
     authorize @card
     @board         = @card.board
     @checklists    = @card.checklists.includes(:checklist_items)
     @comments      = @card.comments.includes(:user)
+    @activities    = @card.activities.includes(:owner).order(created_at: :desc).limit(30)
     @labels        = @board.labels.ordered
     @board_members = @board.members
     @board_lists   = @board.lists.where(archived_at: nil).order(:position)
@@ -43,6 +44,7 @@ class CardsController < ApplicationController
     @old_list_id = @card.list_id
     if card_params[:list_id].present? && card_params[:list_id].to_i != @card.list_id
       new_list = @card.board.lists.find(card_params[:list_id])
+      @card.updated_by = current_user
       @card.move_to_list!(new_list)
     else
       @card.updated_by = current_user
@@ -56,6 +58,7 @@ class CardsController < ApplicationController
 
   def destroy
     authorize @card
+    @card.updated_by = current_user
     @card.archive!
     respond_to do |format|
       format.turbo_stream do
@@ -65,6 +68,16 @@ class CardsController < ApplicationController
         ]
       end
       format.html { redirect_to board_path(@card.board) }
+    end
+  end
+
+  def unarchive
+    authorize @card
+    @card.updated_by = current_user
+    @card.update!(archived_at: nil)
+    respond_to do |format|
+      format.turbo_stream { render turbo_stream: turbo_stream.remove("archived_card_#{@card.id}") }
+      format.html { redirect_to archived_board_path(@card.board) }
     end
   end
 

@@ -1,4 +1,68 @@
 uk:
+  datetime:
+    distance_in_words:
+      half_a_minute: "пів хвилини"
+      less_than_x_seconds:
+        one: "менше секунди"
+        few: "менше %{count} секунд"
+        many: "менше %{count} секунд"
+        other: "менше %{count} секунди"
+      x_seconds:
+        one: "1 секунду"
+        few: "%{count} секунди"
+        many: "%{count} секунд"
+        other: "%{count} секунди"
+      less_than_x_minutes:
+        one: "менше хвилини"
+        few: "менше %{count} хвилин"
+        many: "менше %{count} хвилин"
+        other: "менше %{count} хвилини"
+      x_minutes:
+        one: "1 хвилину"
+        few: "%{count} хвилини"
+        many: "%{count} хвилин"
+        other: "%{count} хвилини"
+      about_x_hours:
+        one: "близько години"
+        few: "близько %{count} годин"
+        many: "близько %{count} годин"
+        other: "близько %{count} години"
+      x_hours:
+        one: "1 годину"
+        few: "%{count} години"
+        many: "%{count} годин"
+        other: "%{count} години"
+      x_days:
+        one: "1 день"
+        few: "%{count} дні"
+        many: "%{count} днів"
+        other: "%{count} дні"
+      about_x_months:
+        one: "близько місяця"
+        few: "близько %{count} місяців"
+        many: "близько %{count} місяців"
+        other: "близько %{count} місяці"
+      x_months:
+        one: "1 місяць"
+        few: "%{count} місяці"
+        many: "%{count} місяців"
+        other: "%{count} місяці"
+      about_x_years:
+        one: "близько року"
+        few: "близько %{count} років"
+        many: "близько %{count} років"
+        other: "близько %{count} років"
+      over_x_years:
+        one: "більше року"
+        few: "більше %{count} років"
+        many: "більше %{count} років"
+        other: "більше %{count} років"
+      almost_x_years:
+        one: "майже рік"
+        few: "майже %{count} роки"
+        many: "майже %{count} років"
+        other: "майже %{count} років"
+
   common:
     name: "Назва"
     description: "Опис"
@@ -48,6 +112,15 @@ uk:
     save_btn: "Зберегти зміни"
     background_color: "Колір фону"
     invite_btn: "Запросити"
+    archive_title: "Архів дошки"
+    archive_empty: "Архів порожній — жодної картки не архівовано."
+    archived_in_list: "у списку %{list}"
+    archived_at: "%{time} тому"
+    restore_btn: "Відновити"
+    filter_by: "Фільтр:"
+    filter_overdue: "⚠ Прострочені"
+    filter_due_soon: "⏰ Скоро"
+    filter_clear: "Скинути"
     invite_title: "Запросити до %{name}"
     email_placeholder: "Email адреса"
     role_member: "Учасник"
@@ -82,6 +155,8 @@ uk:
     description: "Опис"
     attachments: "Вкладення"
     activity: "Активність"
+    change_log: "Журнал змін"
+    no_changes: "Змін ще не зафіксовано."
     comment_placeholder: "Написати коментар…"
     add_to_card: "Додати до картки"
     labels_btn: "🏷 Мітки"
@@ -185,6 +260,23 @@ uk:
       time_logged: "Записано часу"
       completion: "Виконання"
       boards_cnt: "дошок"
+
+  activities:
+    card.title_changed: "змінив(-ла) назву з «%{from}»"
+    card.due_date_set: "встановив(-ла) термін виконання"
+    card.due_date_cleared: "прибрав(-ла) термін виконання"
+    card.completed: "позначив(-ла) картку як виконану"
+    card.reopened: "відновив(-ла) картку"
+    card.moved: "перемістив(-ла) в список «%{to}»"
+    card.archived: "архівував(-ла) картку"
+    card.unarchived: "відновив(-ла) картку з архіву"
+
+  reminder_mailer:
+    due_date_subject: "Нагадування: «%{card}» — термін %{date}"
+    greeting: "Привіт, %{name}!"
+    due_on: "Термін виконання: %{date}"
+    open_card: "Відкрити картку"
+    footer: "NiceTasker — ви отримали це, бо є учасником цієї картки"
 
   card_relations:
     sidebar_btn: "🔗 Пов'язати картку"

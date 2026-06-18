@@ -48,6 +48,7 @@ class Card < ApplicationRecord
   after_create_commit  :broadcast_card_create
   after_update_commit  :broadcast_card_update
   after_update_commit  :notify_members_of_update
+  after_update_commit  :log_activity
   after_destroy_commit :broadcast_card_remove
 
   def move_to_list!(new_list, new_position = nil)
@@ -108,6 +109,25 @@ class Card < ApplicationRecord
         notifiable:  self,
         action_type: :card_updated
       )
+    end
+  end
+
+  ACTIVITY_FIELDS = {
+    "title"        => ->(old, _new) { { key: "card.title_changed", params: { from: old } } },
+    "due_date"     => ->(_old, new_val) { { key: new_val.present? ? "card.due_date_set" : "card.due_date_cleared", params: {} } },
+    "due_completed" => ->(_old, new_val) { { key: new_val ? "card.completed" : "card.reopened", params: {} } },
+    "list_id"      => ->(_old, new_val) { { key: "card.moved", params: { to: List.find_by(id: new_val)&.name.to_s } } },
+    "archived_at"  => ->(_old, new_val) { { key: new_val.present? ? "card.archived" : "card.unarchived", params: {} } }
+  }.freeze
+
+  def log_activity
+    return unless updated_by
+
+    ACTIVITY_FIELDS.each do |field, builder|
+      next unless saved_changes.key?(field)
+      old_val, new_val = saved_changes[field]
+      result = builder.call(old_val, new_val)
+      Activity.log(key: result[:key], owner: updated_by, board: board, trackable: self, params: result[:params])
     end
   end
 
