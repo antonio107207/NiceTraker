@@ -37,6 +37,42 @@
       <%# Divider %>
       <div class="hidden sm:block w-px h-5 bg-white/20"></div>
 
+      <%# Notification bell %>
+      <div class="relative" data-controller="dropdown">
+        <button data-action="click->dropdown#toggle"
+                class="relative w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/20 transition-colors text-white/90">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+          </svg>
+          <span id="notification_badge">
+            <% unread_count = current_user.notifications.unread.count %>
+            <% if unread_count > 0 %>
+              <span class="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-0.5 pointer-events-none">
+                <%= unread_count > 9 ? "9+" : unread_count %>
+              </span>
+            <% end %>
+          </span>
+        </button>
+
+        <div data-dropdown-target="menu"
+             class="hidden absolute right-0 top-11 w-80 bg-white rounded-xl shadow-xl z-50 border border-gray-100 overflow-hidden">
+          <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+            <h3 class="text-sm font-semibold text-gray-800"><%= t("notifications.title") %></h3>
+            <%= button_to t("notifications.mark_all_read"), mark_all_read_notifications_path, method: :patch,
+                  form: { data: { turbo_stream: true } },
+                  class: "text-xs text-indigo-600 hover:text-indigo-800 transition-colors cursor-pointer" %>
+          </div>
+          <div id="notifications_list" class="max-h-96 overflow-y-auto">
+            <%= render "notifications/list",
+                  notifications: current_user.notifications.recent.includes(:actor, :notifiable) %>
+          </div>
+        </div>
+      </div>
+
+      <%# Divider %>
+      <div class="hidden sm:block w-px h-5 bg-white/20"></div>
+
       <%# User dropdown %>
       <div class="relative" data-controller="dropdown">
         <button data-action="click->dropdown#toggle"

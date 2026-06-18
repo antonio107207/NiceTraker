@@ -1,0 +1,8 @@
+<%= @actor.display_name %> <%= @notification.message %>
+
+Задача: <%= @card.title %>
+<% if @notification.mentioned? %>
+Коментар: <%= @notification.notifiable.body.gsub(/\@\[([^\]]+)\]/, '@\1') %>
+<% end %>
+
+Відкрити: <%= board_card_url(@card.board, @card) %>

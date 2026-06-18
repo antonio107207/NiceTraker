@@ -126,7 +126,8 @@
     <div class="px-3 pb-5 sm:absolute sm:bottom-5 sm:left-4 sm:z-10 sm:px-0 sm:pb-0"
          data-controller="toggle-form" id="add_list_area">
       <div data-toggle-form-target="form" class="hidden w-full sm:w-72 bg-white rounded-xl p-3 shadow-2xl mb-2">
-        <%= form_with url: board_lists_path(@board), scope: :list, data: { turbo_stream: true } do |f| %>
+        <%= form_with url: board_lists_path(@board), scope: :list,
+              data: { turbo_stream: true, controller: "reset-form", action: "turbo:submit-end->reset-form#reset" } do |f| %>
           <%= f.text_field :name, placeholder: t("boards.list_name_placeholder"),
                 class: "w-full px-3 py-2 rounded-lg text-sm text-gray-800 border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none",
                 autofocus: true, required: true %>

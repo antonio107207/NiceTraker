@@ -45,6 +45,7 @@ class CardsController < ApplicationController
       new_list = @card.board.lists.find(card_params[:list_id])
       @card.move_to_list!(new_list)
     else
+      @card.updated_by = current_user
       @card.update(card_params.except(:list_id))
     end
     respond_to do |format|

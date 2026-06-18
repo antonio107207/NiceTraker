@@ -276,3 +276,18 @@ uk:
     delete_hint: "Після видалення облікового запису всі ваші дані будуть безповоротно видалені."
     delete_btn: "Видалити мій акаунт"
     delete_confirm: "Ви впевнені? Цю дію неможливо скасувати."
+  notifications:
+    title: "Сповіщення"
+    mark_all_read: "Прочитати всі"
+    empty: "Немає сповіщень"
+    open: "відкрити →"
+    ago: "%{time} тому"
+    mentioned: "згадав(-ла) вас у \"%{card}\""
+    assigned: "призначив(-ла) вас на \"%{card}\""
+    unassigned: "видалив(-ла) вас з \"%{card}\""
+    card_updated: "оновив(-ла) \"%{card}\""
+    email_subjects:
+      mentioned: "%{actor} згадав(-ла) вас у \"%{card}\""
+      assigned: "Вас призначено на \"%{card}\""
+      unassigned: "Вас видалено з \"%{card}\""
+      card_updated: "\"%{card}\" — оновлено"
