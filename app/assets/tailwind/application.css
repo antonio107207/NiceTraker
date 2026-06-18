@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "../stylesheets/actiontext.css";
+@import "./actiontext.css";
 
 /* Safelist: classes used in bg_picker_controller.js dynamic HTML */
 @source inline("grid grid-cols-5 gap-2 p-1 w-10 h-10 rounded-lg transition-all hover:scale-110 focus:outline-none");
