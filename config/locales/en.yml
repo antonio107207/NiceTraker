@@ -13,6 +13,7 @@ en:
     add: "Add"
     clear: "Clear"
     close: "✕"
+    confirm: "Confirm"
 
   nav:
     boards: "Boards"
@@ -81,6 +82,7 @@ en:
   lists:
     archive: "Archive list"
     archive_confirm: "Archive this list?"
+    archived_section: "Archived lists"
     add_card: "+ Add a card"
     card_title_placeholder: "Enter a title for this card…"
     add_card_btn: "Add card"
@@ -92,7 +94,10 @@ en:
     attachments: "Attachments"
     activity: "Activity"
     change_log: "Change log"
+    unarchive_list_archived: "Cannot restore: the list this card belongs to is also archived. Restore the list first."
     no_changes: "No changes recorded yet."
+    archived_section: "Archived cards"
+    list_also_archived: "list \"%{list}\" is also archived"
     comment_placeholder: "Write a comment…"
     add_to_card: "Add to card"
     labels_btn: "🏷 Labels"

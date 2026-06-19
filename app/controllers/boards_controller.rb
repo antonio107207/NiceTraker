@@ -55,6 +55,7 @@ class BoardsController < ApplicationController
 
   def archived
     authorize @board
+    @archived_lists = @board.all_lists.where.not(archived_at: nil).order(archived_at: :desc)
     @archived_cards = Card.where(board: @board).where.not(archived_at: nil).order(archived_at: :desc)
   end
 

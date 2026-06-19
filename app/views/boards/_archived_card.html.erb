@@ -1,0 +1,22 @@
+<div id="archived_card_<%= card.id %>"
+     class="bg-white rounded-xl shadow-sm border border-gray-100 px-4 py-3 flex items-center justify-between gap-4">
+  <div class="min-w-0 flex-1">
+    <p class="text-sm font-medium text-gray-800 truncate"><%= card.title %></p>
+    <p class="text-xs text-gray-400 mt-0.5">
+      <% if card.list.archived_at.present? %>
+        <span class="text-amber-500">⚠ <%= t("cards.list_also_archived", list: card.list.name) %></span>
+      <% else %>
+        <%= t("boards.archived_in_list", list: card.list.name) %>
+      <% end %>
+      · <%= t("boards.archived_at", time: time_ago_in_words(card.archived_at)) %>
+    </p>
+  </div>
+  <% if policy(card).unarchive? %>
+    <%= button_to unarchive_card_path(card), method: :patch,
+          data: { turbo_stream: true },
+          form: { class: "contents" },
+          class: "text-xs bg-indigo-50 text-indigo-700 hover:bg-indigo-100 px-3 py-1.5 rounded-lg font-medium transition-colors cursor-pointer flex-shrink-0 #{card.list.archived_at.present? ? "opacity-50" : ""}" do %>
+      <%= t("boards.restore_btn") %>
+    <% end %>
+  <% end %>
+</div>

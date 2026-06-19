@@ -1,5 +1,5 @@
 class ListsController < ApplicationController
-  before_action :set_list,  only: %i[update destroy move]
+  before_action :set_list,  only: %i[update destroy move unarchive]
   before_action :set_board
 
   def create
@@ -32,6 +32,16 @@ class ListsController < ApplicationController
     respond_to do |format|
       format.turbo_stream { render turbo_stream: turbo_stream.remove("list_#{@list.id}") }
       format.html { redirect_to board_path(@board) }
+    end
+  end
+
+  def unarchive
+    authorize @list
+    @list.update!(archived_at: nil)
+    @affected_cards = Card.where(list: @list).where.not(archived_at: nil)
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to archived_board_path(@list.board) }
     end
   end
 

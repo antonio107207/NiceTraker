@@ -58,5 +58,23 @@
     <turbo-frame id="modal"></turbo-frame>
     <%# Card modal portal — Turbo Frame renders card detail here %>
     <%= turbo_frame_tag "card_modal" %>
+
+    <%# Confirm dialog — replaces browser window.confirm() for all data-turbo-confirm %>
+    <dialog id="confirm_dialog"
+            class="backdrop:bg-black/50 backdrop:backdrop-blur-sm rounded-2xl shadow-2xl shadow-gray-900/20 border-0 p-0 max-w-sm w-full mx-auto">
+      <div class="bg-white rounded-2xl p-6">
+        <p id="confirm_dialog_message" class="text-sm text-gray-700 mb-5 leading-relaxed"></p>
+        <div class="flex justify-end gap-3">
+          <button id="confirm_dialog_cancel"
+                  class="px-4 py-2 text-sm text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors">
+            <%= t("common.cancel") %>
+          </button>
+          <button id="confirm_dialog_ok"
+                  class="px-4 py-2 text-sm text-white bg-red-600 hover:bg-red-700 rounded-lg font-medium transition-colors">
+            <%= t("common.confirm") %>
+          </button>
+        </div>
+      </div>
+    </dialog>
   </body>
 </html>

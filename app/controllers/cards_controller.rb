@@ -64,7 +64,8 @@ class CardsController < ApplicationController
       format.turbo_stream do
         render turbo_stream: [
           turbo_stream.remove("card_#{@card.id}"),
-          turbo_stream.update("card_modal", "")
+          turbo_stream.update("card_modal", ""),
+          turbo_stream.action(:redirect, board_path(@card.board))
         ]
       end
       format.html { redirect_to board_path(@card.board) }
@@ -73,6 +74,17 @@ class CardsController < ApplicationController
 
   def unarchive
     authorize @card
+
+    if @card.list.archived_at.present?
+      @flash_message = t("cards.unarchive_list_archived")
+      @flash_type    = :alert
+      respond_to do |format|
+        format.turbo_stream { render "cards/unarchive_blocked" }
+        format.html { redirect_to archived_board_path(@card.board), alert: @flash_message }
+      end
+      return
+    end
+
     @card.updated_by = current_user
     @card.update!(archived_at: nil)
     respond_to do |format|

@@ -14,13 +14,7 @@ until pg_isready -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" 2>/dev/null; do
 done
 echo "PostgreSQL is ready."
 
-# Run app migrations
-bundle exec rails db:migrate
-
-# Load solid_queue schema if tables are missing
-if ! bundle exec rails runner "ActiveRecord::Base.connection.table_exists?('solid_queue_jobs')" 2>/dev/null | grep -q "true"; then
-  echo "Loading solid_queue schema..."
-  bundle exec rails runner "load Rails.root.join('db/queue_schema.rb')"
-fi
+# Prepare all databases (creates schema or runs migrations for each configured DB)
+bundle exec rails db:prepare
 
 exec "$@"
