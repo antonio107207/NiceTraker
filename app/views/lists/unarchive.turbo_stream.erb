@@ -1,0 +1,7 @@
+<%= turbo_stream.remove "archived_list_#{@list.id}" %>
+
+<% @affected_cards.each do |card| %>
+  <%= turbo_stream.replace "archived_card_#{card.id}" do %>
+    <%= render "boards/archived_card", card: card %>
+  <% end %>
+<% end %>

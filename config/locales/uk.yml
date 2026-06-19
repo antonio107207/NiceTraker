@@ -77,6 +77,7 @@ uk:
     add: "Додати"
     clear: "Очистити"
     close: "✕"
+    confirm: "Підтвердити"
 
   nav:
     boards: "Дошки"
@@ -145,6 +146,7 @@ uk:
   lists:
     archive: "Архівувати список"
     archive_confirm: "Архівувати цей список?"
+    archived_section: "Архівовані списки"
     add_card: "+ Додати картку"
     card_title_placeholder: "Введіть назву картки…"
     add_card_btn: "Додати картку"
@@ -156,7 +158,10 @@ uk:
     attachments: "Вкладення"
     activity: "Активність"
     change_log: "Журнал змін"
+    unarchive_list_archived: "Не вдалося відновити: список, до якого належить картка, також архівований. Спочатку відновіть список."
     no_changes: "Змін ще не зафіксовано."
+    archived_section: "Архівовані картки"
+    list_also_archived: "список «%{list}» теж архівовано"
     comment_placeholder: "Написати коментар…"
     add_to_card: "Додати до картки"
     labels_btn: "🏷 Мітки"

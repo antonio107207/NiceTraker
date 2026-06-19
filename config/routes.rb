@@ -17,7 +17,10 @@ Rails.application.routes.draw do
         end
         resources :labels, only: %i[create destroy], shallow: true
         resources :lists, shallow: true do
-          member { patch :move }
+          member do
+            patch :move
+            patch :unarchive
+          end
           resources :cards, shallow: true do
             member do
               patch :move

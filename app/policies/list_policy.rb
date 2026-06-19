@@ -1,7 +1,8 @@
 class ListPolicy < ApplicationPolicy
   delegate :show?, :create?, :edit?, :update?, :destroy?, to: :board_policy
 
-  def move? = board_policy.manage_lists?
+  def move?      = board_policy.manage_lists?
+  def unarchive? = board_policy.manage_lists?
 
   class Scope < ApplicationPolicy::Scope
     def resolve = scope.all
