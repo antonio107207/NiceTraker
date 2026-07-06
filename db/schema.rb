@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_18_000001) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_06_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -361,6 +361,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_18_000001) do
     t.datetime "remember_created_at"
     t.datetime "reset_password_sent_at"
     t.string "reset_password_token"
+    t.boolean "super_admin", default: false, null: false
     t.string "uid"
     t.datetime "updated_at", null: false
     t.index [ "email" ], name: "index_users_on_email", unique: true
@@ -380,6 +381,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_18_000001) do
   end
 
   create_table "workspaces", force: :cascade do |t|
+    t.datetime "archived_at"
     t.datetime "created_at", null: false
     t.text "description"
     t.string "name"
@@ -387,6 +389,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_18_000001) do
     t.boolean "personal", default: false, null: false
     t.string "slug"
     t.datetime "updated_at", null: false
+    t.index [ "archived_at" ], name: "index_workspaces_on_archived_at"
     t.index [ "owner_id" ], name: "index_workspaces_on_owner_id"
   end
 

@@ -1,0 +1,99 @@
+<% content_for :title, "Portal — NiceTasker" %>
+
+<div class="space-y-8">
+
+  <%# Header %>
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900"><%= t("portal.dashboard.title") %></h1>
+    <p class="text-sm text-gray-500 mt-0.5"><%= t("portal.dashboard.subtitle") %></p>
+  </div>
+
+  <%# Stats grid %>
+  <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
+    <% [
+      { key: :users,        label: t("portal.dashboard.stats.users"),        value: @stats[:users],        link: portal_users_path,      color: "indigo", icon: "M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" },
+      { key: :super_admins, label: t("portal.dashboard.stats.super_admins"), value: @stats[:super_admins], link: portal_users_path,      color: "violet", icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" },
+      { key: :workspaces,   label: t("portal.dashboard.stats.workspaces"),   value: @stats[:workspaces],   link: portal_workspaces_path, color: "sky",    icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" },
+      { key: :boards,       label: t("portal.dashboard.stats.boards"),        value: @stats[:boards],       link: portal_boards_path,     color: "emerald",icon: "M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" },
+      { key: :cards,        label: t("portal.dashboard.stats.cards"),         value: @stats[:cards],        link: portal_cards_path,      color: "amber",  icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" },
+      { key: :comments,     label: t("portal.dashboard.stats.comments"),      value: @stats[:comments],     link: nil,                    color: "rose",   icon: "M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" },
+    ].each do |stat| %>
+      <%= stat[:link] ? link_to(stat[:link]) : content_tag(:div) do %>
+        <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-500"><%= stat[:label] %></p>
+              <p class="text-3xl font-bold text-gray-900 mt-1"><%= number_with_delimiter(stat[:value]) %></p>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-<%= stat[:color] %>-50 flex items-center justify-center shrink-0">
+              <svg class="w-5 h-5 text-<%= stat[:color] %>-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="<%= stat[:icon] %>"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+
+  <%# Recent tables %>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+    <%# Recent users %>
+    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+        <h2 class="text-sm font-semibold text-gray-700"><%= t("portal.dashboard.recent_users") %></h2>
+        <%= link_to t("portal.dashboard.view_all"), portal_users_path, class: "text-xs text-indigo-600 hover:text-indigo-800 font-medium" %>
+      </div>
+      <div class="divide-y divide-gray-50">
+        <% @recent_users.each do |user| %>
+          <%= link_to portal_user_path(user), class: "flex items-center gap-3 px-5 py-3 hover:bg-gray-50 transition-colors" do %>
+            <% if user.avatar.attached? %>
+              <img src="<%= url_for(user.avatar) %>" class="w-8 h-8 rounded-full object-cover shrink-0">
+            <% elsif user.avatar_url.present? %>
+              <img src="<%= user.avatar_url %>" class="w-8 h-8 rounded-full object-cover shrink-0">
+            <% else %>
+              <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-700 shrink-0">
+                <%= user.initials %>
+              </div>
+            <% end %>
+            <div class="min-w-0 flex-1">
+              <div class="text-sm font-medium text-gray-900 truncate"><%= user.display_name %></div>
+              <div class="text-xs text-gray-400 truncate"><%= user.email %></div>
+            </div>
+            <% if user.super_admin? %>
+              <span class="shrink-0 text-[10px] font-bold uppercase tracking-wider text-violet-700 bg-violet-50 border border-violet-200 px-2 py-0.5 rounded-full">
+                <%= t("portal.users.super_admin_badge") %>
+              </span>
+            <% end %>
+            <span class="shrink-0 text-xs text-gray-400"><%= user.created_at.strftime("%d.%m.%y") %></span>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+    <%# Recent boards %>
+    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+        <h2 class="text-sm font-semibold text-gray-700"><%= t("portal.dashboard.recent_boards") %></h2>
+        <%= link_to t("portal.dashboard.view_all"), portal_boards_path, class: "text-xs text-indigo-600 hover:text-indigo-800 font-medium" %>
+      </div>
+      <div class="divide-y divide-gray-50">
+        <% @recent_boards.each do |board| %>
+          <%= link_to portal_board_path(board), class: "flex items-center gap-3 px-5 py-3 hover:bg-gray-50 transition-colors" do %>
+            <div class="w-8 h-8 rounded-lg shrink-0 flex items-center justify-center text-white text-xs font-bold"
+                 style="background: <%= board.background_color.presence || '#4f46e5' %>">
+              <%= board.key %>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="text-sm font-medium text-gray-900 truncate"><%= board.name %></div>
+              <div class="text-xs text-gray-400 truncate"><%= board.workspace.name %></div>
+            </div>
+            <span class="shrink-0 text-xs text-gray-400"><%= board.created_at.strftime("%d.%m.%y") %></span>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+  </div>
+</div>

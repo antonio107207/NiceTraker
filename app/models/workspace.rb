@@ -4,6 +4,9 @@ class Workspace < ApplicationRecord
   has_many :members, through: :workspace_memberships, source: :user
   has_many :boards, dependent: :destroy
 
+  scope :active,   -> { where(archived_at: nil) }
+  scope :archived, -> { where.not(archived_at: nil) }
+
   validates :name, presence: true
   validates :slug, presence: true, uniqueness: true, format: { with: /\A[a-z0-9-]+\z/ }
 

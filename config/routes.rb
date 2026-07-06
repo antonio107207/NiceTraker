@@ -10,10 +10,12 @@ Rails.application.routes.draw do
     root to: "dashboard#index"
 
     resources :workspaces do
+      member { patch :archive }
       resources :boards, shallow: true do
         member do
-          post :invite
-          get  :archived
+          post  :invite
+          get   :archived
+          patch :archive
         end
         resources :labels, only: %i[create destroy], shallow: true
         resources :lists, shallow: true do
@@ -65,6 +67,16 @@ Rails.application.routes.draw do
 
     get  "reports",        to: "reports#index",  as: :reports
     get  "reports/export", to: "reports#export", as: :export_reports
+
+    namespace :portal, path: "manage" do
+      root to: "dashboard#index"
+      resources :users, only: %i[index show edit update destroy] do
+        member { patch :toggle_super_admin }
+      end
+      resources :workspaces, only: %i[index show destroy]
+      resources :boards,     only: %i[index show destroy]
+      resources :cards,      only: %i[index show destroy]
+    end
   end
 
   unauthenticated do

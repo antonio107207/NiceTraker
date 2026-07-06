@@ -1,4 +1,4 @@
-<%= form_with model: [workspace, board], multipart: true,
+<%= form_with model: board.new_record? ? [workspace, board] : board, multipart: true,
               class: "space-y-5",
               data: { turbo_frame: "_top" } do |f| %>
   <% if board.errors.any? %>

@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import { Turbo } from "@hotwired/turbo-rails"
 
 // Inline text editing (single line — for list/card titles)
 export default class extends Controller {
@@ -16,14 +17,22 @@ export default class extends Controller {
     if (e.key === "Escape") { this.element.textContent = this.original; this.element.blur() }
   }
 
-  save() {
+  async save() {
     const value = this.element.textContent.trim()
     if (value === this.original || !value) return
     this.original = value
-    fetch(this.urlValue, {
+    const response = await fetch(this.urlValue, {
       method:  "PATCH",
-      headers: { "Content-Type": "application/json", "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]')?.content },
-      body:    JSON.stringify({ [this.fieldValue.split("[")[0]]: { [this.fieldValue.match(/\[(.+)\]/)?.[1]]: value } })
+      headers: {
+        "Content-Type": "application/json",
+        "Accept":        "text/vnd.turbo-stream.html",
+        "X-CSRF-Token":  document.querySelector('meta[name="csrf-token"]')?.content
+      },
+      body: JSON.stringify({ [this.fieldValue.split("[")[0]]: { [this.fieldValue.match(/\[(.+)\]/)?.[1]]: value } })
     })
+    if (response.ok) {
+      const html = await response.text()
+      Turbo.renderStreamMessage(html)
+    }
   }
 }

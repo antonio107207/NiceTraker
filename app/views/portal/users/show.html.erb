@@ -1,0 +1,111 @@
+<% content_for :title, "#{@user.display_name} — Portal" %>
+
+<div class="space-y-6">
+
+  <%# Back + actions %>
+  <div class="flex items-center justify-between">
+    <%= link_to portal_users_path, class: "flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+      <%= t("portal.nav.users") %>
+    <% end %>
+    <div class="flex items-center gap-2">
+      <%= link_to edit_portal_user_path(@user), class: "flex items-center gap-1.5 px-3 py-1.5 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg hover:bg-amber-100 transition-colors font-medium" do %>
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+        <%= t("portal.actions.edit") %>
+      <% end %>
+      <% unless @user == current_user %>
+        <%= button_to toggle_super_admin_portal_user_path(@user), method: :patch,
+              class: "flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors cursor-pointer #{@user.super_admin? ? 'text-gray-600 bg-gray-50 border-gray-200 hover:bg-gray-100' : 'text-violet-700 bg-violet-50 border-violet-200 hover:bg-violet-100'}",
+              form: { class: "contents" } do %>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          <%= @user.super_admin? ? t("portal.users.demote") : t("portal.users.promote") %>
+        <% end %>
+        <%= button_to portal_user_path(@user), method: :delete,
+              data: { turbo_confirm: t("portal.users.delete_confirm", name: @user.display_name) },
+              class: "flex items-center gap-1.5 px-3 py-1.5 text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors font-medium cursor-pointer",
+              form: { class: "contents" } do %>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          <%= t("portal.actions.delete") %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Profile card %>
+  <div class="bg-white rounded-xl border border-gray-200 p-6 flex items-start gap-6">
+    <% if @user.avatar.attached? %>
+      <img src="<%= url_for(@user.avatar) %>" class="w-20 h-20 rounded-2xl object-cover shrink-0">
+    <% elsif @user.avatar_url.present? %>
+      <img src="<%= @user.avatar_url %>" class="w-20 h-20 rounded-2xl object-cover shrink-0">
+    <% else %>
+      <div class="w-20 h-20 rounded-2xl bg-indigo-100 flex items-center justify-center text-2xl font-bold text-indigo-700 shrink-0">
+        <%= @user.initials %>
+      </div>
+    <% end %>
+    <div class="flex-1 min-w-0">
+      <div class="flex items-center gap-3 flex-wrap">
+        <h1 class="text-xl font-bold text-gray-900"><%= @user.display_name %></h1>
+        <% if @user.super_admin? %>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-violet-700 bg-violet-50 border border-violet-200 px-2.5 py-1 rounded-full">
+            <%= t("portal.users.super_admin_badge") %>
+          </span>
+        <% end %>
+      </div>
+      <p class="text-gray-500 text-sm mt-1"><%= @user.email %></p>
+      <div class="flex items-center gap-4 mt-3 text-xs text-gray-400">
+        <span><%= t("portal.users.joined") %>: <strong class="text-gray-600"><%= @user.created_at.strftime("%d %b %Y") %></strong></span>
+        <% if @user.provider.present? %>
+          <span><%= t("portal.users.provider") %>: <strong class="text-gray-600 capitalize"><%= @user.provider.gsub("_", " ") %></strong></span>
+        <% end %>
+        <span><%= t("portal.users.workspaces_count") %>: <strong class="text-gray-600"><%= @workspace_memberships.count %></strong></span>
+        <span><%= t("portal.users.boards_count") %>: <strong class="text-gray-600"><%= @board_memberships.count %></strong></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <%# Workspaces %>
+    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div class="px-5 py-4 border-b border-gray-100">
+        <h2 class="text-sm font-semibold text-gray-700"><%= t("portal.nav.workspaces") %> (<%= @workspace_memberships.count %>)</h2>
+      </div>
+      <div class="divide-y divide-gray-50">
+        <% if @workspace_memberships.empty? %>
+          <p class="px-5 py-4 text-sm text-gray-400"><%= t("portal.empty") %></p>
+        <% else %>
+          <% @workspace_memberships.each do |m| %>
+            <%= link_to portal_workspace_path(m.workspace), class: "flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors" do %>
+              <span class="text-sm font-medium text-gray-800"><%= m.workspace.name %></span>
+              <span class="text-xs text-gray-400 capitalize"><%= m.role %></span>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+    <%# Boards %>
+    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div class="px-5 py-4 border-b border-gray-100">
+        <h2 class="text-sm font-semibold text-gray-700"><%= t("portal.nav.boards") %> (<%= @board_memberships.count %>)</h2>
+      </div>
+      <div class="divide-y divide-gray-50">
+        <% if @board_memberships.empty? %>
+          <p class="px-5 py-4 text-sm text-gray-400"><%= t("portal.empty") %></p>
+        <% else %>
+          <% @board_memberships.each do |m| %>
+            <%= link_to portal_board_path(m.board), class: "flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors" do %>
+              <div class="flex items-center gap-2.5">
+                <div class="w-6 h-6 rounded text-white text-[10px] font-bold flex items-center justify-center shrink-0"
+                     style="background: <%= m.board.background_color.presence || '#4f46e5' %>">
+                  <%= m.board.key %>
+                </div>
+                <span class="text-sm font-medium text-gray-800"><%= m.board.name %></span>
+              </div>
+              <span class="text-xs text-gray-400 capitalize"><%= m.role %></span>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

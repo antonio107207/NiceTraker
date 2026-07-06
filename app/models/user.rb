@@ -15,6 +15,8 @@ class User < ApplicationRecord
   validates :name, presence: true, allow_blank: true
   validates :email, presence: true, uniqueness: true
 
+  scope :super_admins, -> { where(super_admin: true) }
+
   def self.from_omniauth(auth)
     # 1. Вже прив'язаний OAuth акаунт
     user = find_by(provider: auth.provider, uid: auth.uid)

@@ -1,10 +1,12 @@
 <%= turbo_frame_tag "modal" do %>
   <div class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
        data-controller="dialog-modal"
-       data-action="keydown.esc@window->dialog-modal#close">
-    <div class="glass-panel bg-white/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-gray-900/20 w-full max-w-md overflow-hidden">
-      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100/60">
-        <h2 class="text-base font-semibold text-gray-900"><%= t("workspaces.edit_title") %></h2>
+       data-action="keydown.esc@window->dialog-modal#close click->dialog-modal#backdropClose">
+    <div class="glass-panel bg-white/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-gray-900/20 w-full max-w-md overflow-hidden flex flex-col max-h-[90svh]">
+
+      <%# Header %>
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100/60 shrink-0">
+        <h2 class="text-base font-semibold text-gray-900"><%= t("workspaces.settings_title") %></h2>
         <button type="button" data-action="click->dialog-modal#close"
                 class="w-7 h-7 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -12,9 +14,30 @@
           </svg>
         </button>
       </div>
-      <div class="px-6 py-5">
+
+      <%# Scrollable body %>
+      <div class="overflow-y-auto flex-1 px-6 py-5">
         <%= render "form", workspace: @workspace %>
       </div>
+
+      <%# Danger zone %>
+      <% if policy(@workspace).archive? %>
+        <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/60 shrink-0">
+          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3"><%= t("common.danger_zone") %></p>
+          <div class="flex items-center gap-3 flex-wrap">
+            <%= button_to archive_workspace_path(@workspace), method: :patch,
+                  data: { turbo_confirm: t("workspaces.archive_confirm") },
+                  form: { data: { turbo_frame: "_top" } },
+                  class: "flex items-center gap-1.5 px-3 py-1.5 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg hover:bg-amber-100 transition-colors font-medium cursor-pointer" do %>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+              </svg>
+              <%= t("workspaces.archive_btn") %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
     </div>
   </div>
 <% end %>

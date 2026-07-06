@@ -3,6 +3,7 @@ class WorkspacePolicy < ApplicationPolicy
   def edit?          = admin?
   def update?        = admin?
   def destroy?       = admin?
+  def archive?       = admin?
   def create?        = true
   def remove_member? = admin?
 

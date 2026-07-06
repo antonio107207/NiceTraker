@@ -1,0 +1,96 @@
+<% content_for :title, "#{@card.title} — Portal" %>
+
+<div class="space-y-6">
+  <div class="flex items-center justify-between">
+    <%= link_to portal_cards_path, class: "flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+      <%= t("portal.nav.cards") %>
+    <% end %>
+    <div class="flex items-center gap-2">
+      <%= link_to card_path(@card), target: "_blank", class: "flex items-center gap-1.5 px-3 py-1.5 text-sm text-indigo-700 bg-indigo-50 border border-indigo-200 rounded-lg hover:bg-indigo-100 transition-colors font-medium" do %>
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        <%= t("portal.cards.open_card") %>
+      <% end %>
+      <%= button_to portal_card_path(@card), method: :delete,
+            data: { turbo_confirm: t("portal.cards.delete_confirm", title: @card.title) },
+            class: "flex items-center gap-1.5 px-3 py-1.5 text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors font-medium cursor-pointer",
+            form: { class: "contents" } do %>
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+        <%= t("portal.actions.delete") %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <%# Card details %>
+    <div class="lg:col-span-2 space-y-4">
+      <div class="bg-white rounded-xl border border-gray-200 p-6">
+        <div class="flex items-start justify-between gap-4">
+          <h1 class="text-xl font-bold text-gray-900 leading-tight"><%= @card.title %></h1>
+          <% if @card.archived_at.present? %>
+            <span class="shrink-0 text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full">Archived</span>
+          <% end %>
+        </div>
+
+        <div class="flex flex-wrap gap-3 mt-4 text-xs text-gray-400">
+          <span><%= t("portal.cards.col_board") %>: <%= link_to @card.board.name, portal_board_path(@card.board), class: "text-indigo-600 hover:text-indigo-800 font-semibold" %></span>
+          <span><%= t("portal.cards.col_list") %>: <strong class="text-gray-600"><%= @card.list.name %></strong></span>
+          <% if @card.due_date.present? %>
+            <span><%= t("portal.cards.col_due") %>: <strong class="<%= @card.due_date < Date.today && !@card.due_completed? ? 'text-red-600' : 'text-gray-600' %>"><%= @card.due_date.strftime("%d %b %Y") %></strong></span>
+          <% end %>
+          <span><%= t("portal.cards.col_created") %>: <strong class="text-gray-600"><%= @card.created_at.strftime("%d %b %Y") %></strong></span>
+        </div>
+
+        <% if @card.description.present? %>
+          <div class="mt-4 pt-4 border-t border-gray-100 prose prose-sm max-w-none text-gray-600">
+            <%= @card.description.html_safe %>
+          </div>
+        <% end %>
+      </div>
+
+      <%# Comments %>
+      <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div class="px-5 py-4 border-b border-gray-100">
+          <h2 class="text-sm font-semibold text-gray-700"><%= t("cards.activity") %> (<%= @comments.count %>)</h2>
+        </div>
+        <div class="divide-y divide-gray-50">
+          <% if @comments.empty? %>
+            <p class="px-5 py-4 text-sm text-gray-400"><%= t("portal.empty") %></p>
+          <% else %>
+            <% @comments.each do |comment| %>
+              <div class="px-5 py-3">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="text-sm font-medium text-gray-800"><%= comment.user.display_name %></span>
+                  <span class="text-xs text-gray-400"><%= comment.created_at.strftime("%d %b %Y %H:%M") %></span>
+                </div>
+                <div class="text-sm text-gray-600"><%= comment.body.html_safe %></div>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <%# Activity sidebar %>
+    <div class="space-y-4">
+      <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div class="px-5 py-4 border-b border-gray-100">
+          <h2 class="text-sm font-semibold text-gray-700"><%= t("cards.change_log") %></h2>
+        </div>
+        <div class="divide-y divide-gray-50 max-h-96 overflow-y-auto">
+          <% if @activities.empty? %>
+            <p class="px-5 py-4 text-sm text-gray-400"><%= t("portal.empty") %></p>
+          <% else %>
+            <% @activities.each do |activity| %>
+              <div class="px-4 py-3 text-xs text-gray-500">
+                <span class="font-medium text-gray-700"><%= activity.owner&.display_name %></span>
+                <%= t("activities.#{activity.key}", **(activity.parameters&.symbolize_keys || {}), default: activity.key.humanize) %>
+                <span class="block text-gray-400 mt-0.5"><%= activity.created_at.strftime("%d %b %Y %H:%M") %></span>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

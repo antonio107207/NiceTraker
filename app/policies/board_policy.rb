@@ -4,6 +4,7 @@ class BoardPolicy < ApplicationPolicy
   def edit?          = board_admin?
   def update?        = board_admin?
   def destroy?       = board_admin?
+  def archive?       = board_admin?
   def invite?        = board_admin?
   def remove_member? = board_admin?
   def archived?      = can_view?

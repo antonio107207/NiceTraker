@@ -1,0 +1,73 @@
+<% content_for :title, "#{t('portal.nav.boards')} — Portal" %>
+
+<div class="space-y-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900"><%= t("portal.nav.boards") %></h1>
+    <p class="text-sm text-gray-500 mt-0.5"><%= t("portal.boards.subtitle", count: @boards.count) %></p>
+  </div>
+
+  <%= form_with url: portal_boards_path, method: :get, class: "flex gap-2" do |f| %>
+    <div class="relative flex-1 max-w-sm">
+      <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      <%= f.text_field :q, value: params[:q], placeholder: t("portal.search_placeholder"), class: "w-full pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" %>
+    </div>
+    <%= f.submit t("portal.search_btn"), class: "px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors cursor-pointer font-medium" %>
+    <% if params[:q].present? %>
+      <%= link_to t("portal.clear_search"), portal_boards_path, class: "px-4 py-2 text-sm text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors" %>
+    <% end %>
+  <% end %>
+
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="border-b border-gray-100 bg-gray-50">
+          <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider"><%= t("portal.boards.col_name") %></th>
+          <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider hidden md:table-cell"><%= t("portal.boards.col_workspace") %></th>
+          <th class="text-center px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider hidden lg:table-cell"><%= t("portal.boards.col_members") %></th>
+          <th class="text-center px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider hidden lg:table-cell"><%= t("portal.boards.col_lists") %></th>
+          <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider hidden xl:table-cell"><%= t("portal.boards.col_created") %></th>
+          <th class="text-right px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider"><%= t("portal.col_actions") %></th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-50">
+        <% @boards.each do |board| %>
+          <tr class="hover:bg-gray-50 transition-colors">
+            <td class="px-5 py-3">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg text-white text-xs font-bold flex items-center justify-center shrink-0"
+                     style="background: <%= board.background_color.presence || '#4f46e5' %>">
+                  <%= board.key %>
+                </div>
+                <div>
+                  <div class="font-medium text-gray-900"><%= board.name %></div>
+                  <% if board.archived_at.present? %>
+                    <div class="text-[10px] text-amber-600 uppercase font-semibold tracking-wide">Archived</div>
+                  <% end %>
+                </div>
+              </div>
+            </td>
+            <td class="px-4 py-3 hidden md:table-cell">
+              <%= link_to board.workspace.name, portal_workspace_path(board.workspace), class: "text-gray-500 hover:text-indigo-600 transition-colors" %>
+            </td>
+            <td class="px-4 py-3 text-center text-gray-500 hidden lg:table-cell"><%= board.board_memberships.count %></td>
+            <td class="px-4 py-3 text-center text-gray-500 hidden lg:table-cell"><%= board.all_lists.count %></td>
+            <td class="px-4 py-3 text-gray-400 hidden xl:table-cell"><%= board.created_at.strftime("%d %b %Y") %></td>
+            <td class="px-5 py-3">
+              <div class="flex items-center justify-end gap-2">
+                <%= link_to portal_board_path(board), class: "p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" do %>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                <% end %>
+                <%= button_to portal_board_path(board), method: :delete,
+                      data: { turbo_confirm: t("portal.boards.delete_confirm", name: board.name) },
+                      class: "p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer",
+                      form: { class: "contents" } do %>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

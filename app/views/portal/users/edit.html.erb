@@ -1,0 +1,43 @@
+<% content_for :title, "#{t('portal.users.edit_title')} — Portal" %>
+
+<div class="space-y-6 max-w-lg">
+  <%= link_to portal_user_path(@user), class: "flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors" do %>
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+    <%= @user.display_name %>
+  <% end %>
+
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div class="px-6 py-5 border-b border-gray-100">
+      <h1 class="text-lg font-semibold text-gray-900"><%= t("portal.users.edit_title") %></h1>
+    </div>
+
+    <%= form_with model: @user, url: portal_user_path(@user), method: :patch, class: "px-6 py-5 space-y-4" do |f| %>
+      <% if @user.errors.any? %>
+        <div class="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+          <ul class="list-disc list-inside space-y-1">
+            <% @user.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div>
+        <%= f.label :name, t("profile.name"), class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.text_field :name, class: "w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" %>
+      </div>
+
+      <div>
+        <%= f.label :email, t("profile.email"), class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.email_field :email, class: "w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" %>
+      </div>
+
+      <div class="flex justify-end gap-3 pt-2">
+        <%= link_to portal_user_path(@user), class: "px-4 py-2 text-sm text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors font-medium" do %>
+          <%= t("common.cancel") %>
+        <% end %>
+        <%= f.submit t("common.save"), class: "px-4 py-2 text-sm text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors font-medium cursor-pointer" %>
+      </div>
+    <% end %>
+  </div>
+</div>
