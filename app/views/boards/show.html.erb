@@ -7,8 +7,9 @@
      data-board-url="<%= board_path(@board) %>"
      data-controller="board-filter">
 
-  <%# Board header %>
-  <div class="flex items-center justify-between px-4 py-2 bg-black/20 text-white">
+  <%# Board header + filter bar — single backdrop so no seam appears %>
+  <div class="bg-black/35 backdrop-blur-sm text-white">
+  <div class="flex items-center justify-between px-4 py-2">
     <div class="flex items-center gap-2 flex-1 min-w-0 mr-2">
       <h1 class="text-base sm:text-xl font-bold truncate"><%= @board.name %></h1>
       <% if @current_membership&.observer? %>
@@ -46,6 +47,20 @@
                 d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
         </svg>
         <%= t("common.archive") %>
+      <% end %>
+
+      <%# Board settings — admins only %>
+      <% if policy(@board).edit? %>
+        <%= link_to edit_board_path(@board),
+              data: { turbo_frame: "modal" },
+              class: "flex items-center justify-center w-8 h-8 bg-white/20 hover:bg-white/30 rounded-lg transition-colors text-white",
+              title: t("boards.settings_title") do %>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+        <% end %>
       <% end %>
 
       <%# Invite popover — admins only %>
@@ -135,7 +150,7 @@
 
   <%# Filter bar %>
   <% if @board_members.any? || @labels.any? %>
-  <div class="flex items-center gap-2 flex-wrap px-4 py-1.5 bg-black/10 text-white text-xs">
+  <div class="flex items-center gap-2 flex-wrap px-4 py-1.5 text-xs">
     <span class="font-medium opacity-70"><%= t("boards.filter_by") %></span>
 
     <%# Member filters %>
@@ -193,6 +208,7 @@
     </button>
   </div>
   <% end %>
+  </div><%# end wrapper %>
 
   <%# Lists area %>
   <div class="flex-1 sm:overflow-x-auto sm:overflow-y-hidden sm:relative" id="board_lists">

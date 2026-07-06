@@ -1,6 +1,7 @@
 class BoardsController < ApplicationController
-  before_action :set_workspace, only: %i[new create]
-  before_action :set_board,     only: %i[show edit update destroy invite archived]
+  before_action :set_workspace,         only: %i[new create]
+  before_action :set_board,             only: %i[show edit update destroy invite archived archive]
+  before_action :redirect_if_archived,  only: %i[show edit update invite]
 
   def show
     authorize @board
@@ -53,6 +54,17 @@ class BoardsController < ApplicationController
     redirect_to workspace, notice: t("flash.board_deleted")
   end
 
+  def archive
+    authorize @board
+    if @board.archived_at.present?
+      @board.update!(archived_at: nil)
+      redirect_to @board.workspace, notice: t("flash.board_unarchived")
+    else
+      @board.update!(archived_at: Time.current)
+      redirect_to @board.workspace, notice: t("flash.board_archived")
+    end
+  end
+
   def archived
     authorize @board
     @archived_lists = @board.all_lists.where.not(archived_at: nil).order(archived_at: :desc)
@@ -87,6 +99,14 @@ class BoardsController < ApplicationController
 
   def set_board
     @board = Board.find(params[:id])
+  end
+
+  def redirect_if_archived
+    if @board.workspace.archived_at?
+      redirect_to root_path, alert: t("flash.workspace_is_archived")
+    elsif @board.archived_at?
+      redirect_to @board.workspace, alert: t("flash.board_is_archived")
+    end
   end
 
   def board_params

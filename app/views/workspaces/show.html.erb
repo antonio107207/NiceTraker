@@ -69,5 +69,37 @@
     </div>
   <% end %>
 
+  <%# Archived boards %>
+  <% if @archived_boards.any? %>
+    <details class="mt-6">
+      <summary class="flex items-center gap-2 text-sm font-medium text-gray-500 cursor-pointer hover:text-gray-700 select-none list-none">
+        <svg class="w-4 h-4 transition-transform details-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+        <%= t("workspaces.archived_boards", count: @archived_boards.count) %>
+      </summary>
+      <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+        <% @archived_boards.each do |board| %>
+          <div class="group block rounded-xl overflow-hidden shadow-sm opacity-60 hover:opacity-80 transition-opacity">
+            <div class="h-16 flex items-end p-3"
+                 style="<%= board_background_style(board) %>">
+            </div>
+            <div class="bg-white px-4 py-3 border border-t-0 border-gray-200 rounded-b-xl flex items-center justify-between gap-2">
+              <div class="min-w-0">
+                <p class="font-semibold text-gray-700 truncate text-sm"><%= board.name %></p>
+                <p class="text-xs text-amber-600 font-medium"><%= t("workspaces.archived_label") %></p>
+              </div>
+              <% if policy(board).archive? %>
+                <%= button_to t("boards.restore_btn"), archive_board_path(board),
+                      method: :patch,
+                      class: "shrink-0 text-xs px-2 py-1 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors cursor-pointer font-medium" %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </details>
+  <% end %>
+
 </div>
 </div>

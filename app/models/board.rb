@@ -17,7 +17,8 @@ class Board < ApplicationRecord
 
   before_validation :generate_key, on: :create
 
-  scope :active, -> { where(archived_at: nil) }
+  scope :active,              -> { where(archived_at: nil) }
+  scope :in_active_workspace, -> { joins(:workspace).where(workspaces: { archived_at: nil }) }
 
   private
 

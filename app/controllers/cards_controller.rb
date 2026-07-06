@@ -1,6 +1,7 @@
 class CardsController < ApplicationController
-  before_action :set_list, only: %i[create]
-  before_action :set_card, only: %i[show update destroy move unarchive]
+  before_action :set_list,              only: %i[create]
+  before_action :set_card,              only: %i[show update destroy move unarchive]
+  before_action :redirect_if_archived,  only: %i[show update]
 
   def show
     authorize @card
@@ -109,6 +110,17 @@ class CardsController < ApplicationController
 
   def set_card
     @card = Card.find(params[:id])
+  end
+
+  def redirect_if_archived
+    board = @card.board
+    if board.workspace.archived_at?
+      redirect_to root_path, alert: t("flash.workspace_is_archived")
+    elsif board.archived_at?
+      redirect_to root_path, alert: t("flash.board_is_archived")
+    elsif @card.archived_at?
+      redirect_to archived_board_path(board), alert: t("flash.card_is_archived")
+    end
   end
 
   def card_params

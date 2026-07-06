@@ -51,6 +51,36 @@
                 data: { turbo_frame: "modal" } %>
         </div>
       <% end %>
+
+      <%# Archived workspaces %>
+      <% if @archived_workspaces.any? %>
+        <details class="mt-6">
+          <summary class="flex items-center gap-2 text-sm font-medium text-gray-500 cursor-pointer hover:text-gray-700 select-none list-none">
+            <svg class="w-4 h-4 transition-transform details-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+            <%= t("dashboard.archived_workspaces", count: @archived_workspaces.count) %>
+          </summary>
+          <div class="mt-3 space-y-2">
+            <% @archived_workspaces.each do |workspace| %>
+              <div class="flex items-center gap-3 px-4 py-3 bg-white rounded-xl border border-gray-200 opacity-70 hover:opacity-90 transition-opacity">
+                <div class="w-8 h-8 rounded bg-gray-400 text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
+                  <%= workspace.name[0].upcase %>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="font-medium text-gray-700 truncate"><%= workspace.name %></p>
+                  <p class="text-xs text-amber-600 font-medium"><%= t("workspaces.archived_label") %></p>
+                </div>
+                <% if policy(workspace).archive? %>
+                  <%= button_to t("workspaces.restore_btn"), archive_workspace_path(workspace),
+                        method: :patch,
+                        class: "shrink-0 text-xs px-3 py-1.5 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-lg transition-colors cursor-pointer font-medium" %>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </details>
+      <% end %>
     </section>
   </div>
 </div>

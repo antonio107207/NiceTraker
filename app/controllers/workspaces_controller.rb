@@ -1,12 +1,16 @@
 class WorkspacesController < ApplicationController
-  before_action :set_workspace, only: %i[show edit update destroy]
+  before_action :set_workspace,        only: %i[show edit update destroy archive]
+  before_action :redirect_if_archived, only: %i[show edit update]
 
   def index
-    @workspaces = current_user.workspaces.order(:name)
+    @workspaces          = current_user.workspaces.active.order(:name)
+    @archived_workspaces = current_user.workspaces.archived.order(archived_at: :desc)
   end
 
   def show
-    @boards = @workspace.boards.active.order(:name)
+    authorize @workspace
+    @boards          = @workspace.boards.active.order(:name)
+    @archived_boards = @workspace.boards.where.not(archived_at: nil).order(archived_at: :desc)
   end
 
   def new
@@ -44,14 +48,32 @@ class WorkspacesController < ApplicationController
   end
 
   def destroy
+    authorize @workspace
     @workspace.destroy!
     redirect_to root_path, notice: t("flash.workspace_deleted")
+  end
+
+  def archive
+    authorize @workspace
+    if @workspace.archived_at.present?
+      @workspace.update!(archived_at: nil)
+      redirect_to @workspace, notice: t("flash.workspace_unarchived")
+    else
+      @workspace.update!(archived_at: Time.current)
+      redirect_to root_path, notice: t("flash.workspace_archived")
+    end
   end
 
   private
 
   def set_workspace
     @workspace = current_user.workspaces.find(params[:id])
+  end
+
+  def redirect_if_archived
+    return unless @workspace.archived_at?
+
+    redirect_to root_path, alert: t("flash.workspace_is_archived")
   end
 
   def workspace_params

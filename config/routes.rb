@@ -10,10 +10,12 @@ Rails.application.routes.draw do
     root to: "dashboard#index"
 
     resources :workspaces do
+      member { patch :archive }
       resources :boards, shallow: true do
         member do
-          post :invite
-          get  :archived
+          post  :invite
+          get   :archived
+          patch :archive
         end
         resources :labels, only: %i[create destroy], shallow: true
         resources :lists, shallow: true do

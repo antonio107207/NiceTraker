@@ -78,6 +78,7 @@ uk:
     clear: "Очистити"
     close: "✕"
     confirm: "Підтвердити"
+    danger_zone: "Небезпечна зона"
 
   nav:
     boards: "Дошки"
@@ -93,18 +94,25 @@ uk:
     create_board: "+ Створити дошку"
     no_workspaces: "Немає робочих просторів."
     create_first: "Створити перший робочий простір"
+    archived_workspaces: "Архівовані простори (%{count})"
 
   workspaces:
     new_title: "Створити робочий простір"
     edit_title: "Редагувати робочий простір"
+    settings_title: "Налаштування простору"
     create_btn: "Створити простір"
     save_btn: "Зберегти зміни"
     new_board: "Нова дошка"
     no_boards: "Немає дошок"
     no_boards_hint: "Створіть першу дошку, щоб розпочати"
     create_board: "Створити дошку"
+    archived_boards: "Архівовані дошки (%{count})"
+    archived_label: "В архіві"
     members_title: "Учасники"
     remove_member: "Видалити"
+    archive_btn: "Архівувати простір"
+    archive_confirm: "Архівувати цей робочий простір? Він буде прихований, але ви зможете відновити його з панелі."
+    restore_btn: "Відновити"
 
   boards:
     new_title: "Створити дошку"
@@ -113,6 +121,10 @@ uk:
     save_btn: "Зберегти зміни"
     background_color: "Колір фону"
     invite_btn: "Запросити"
+    settings_title: "Налаштування дошки"
+    danger_zone: "Небезпечна зона"
+    archive_board_btn: "Відправити в архів"
+    archive_board_confirm: "Архівувати цю дошку? Вона буде прихована, але адмін зможе її відновити."
     archive_title: "Архів дошки"
     archive_empty: "Архів порожній — жодної картки не архівовано."
     archived_in_list: "у списку %{list}"
@@ -185,6 +197,7 @@ uk:
   checklists:
     delete: "Видалити"
     delete_confirm: "Видалити чекліст?"
+    delete_item_confirm: "Видалити цей пункт?"
     add_item_placeholder: "Додати пункт…"
 
   labels:
@@ -339,6 +352,13 @@ uk:
     board_created: "Дошку створено."
     board_updated: "Дошку оновлено."
     board_deleted: "Дошку видалено."
+    board_archived: "Дошку відправлено в архів."
+    board_is_archived: "Ця дошка знаходиться в архіві."
+    card_is_archived: "Ця картка знаходиться в архіві."
+    board_unarchived: "Дошку відновлено."
+    workspace_archived: "Робочий простір відправлено в архів."
+    workspace_unarchived: "Робочий простір відновлено."
+    workspace_is_archived: "Цей робочий простір знаходиться в архіві."
     already_member: "%{email} вже є учасником дошки."
     invitation_sent: "Запрошення надіслано на %{email}."
     invitation_expired: "Термін дії запрошення закінчився."

@@ -18,3 +18,7 @@
     <%= "#{done}/#{total}" if total > 0 %>
   </span>
 <% end %>
+
+<%= turbo_stream.replace "card_#{@card.id}" do %>
+  <%= render @card %>
+<% end %>

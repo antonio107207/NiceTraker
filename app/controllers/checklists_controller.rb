@@ -1,12 +1,20 @@
 class ChecklistsController < ApplicationController
   before_action :set_card,      only: %i[create]
-  before_action :set_checklist, only: %i[destroy]
+  before_action :set_checklist, only: %i[update destroy]
 
   def create
     title = checklist_params[:title].presence || "Checklist"
     @checklist = @card.checklists.create!(title: title)
     respond_to do |format|
       format.turbo_stream
+      format.html { redirect_to @card }
+    end
+  end
+
+  def update
+    @checklist.update!(checklist_params)
+    respond_to do |format|
+      format.turbo_stream { render turbo_stream: turbo_stream.replace("checklist_title_#{@checklist.id}", partial: "checklists/title", locals: { checklist: @checklist }) }
       format.html { redirect_to @card }
     end
   end
