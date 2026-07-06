@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html class="h-full" data-controller="theme">
+  <head>
+    <title><%= content_for(:title).presence || "Portal — NiceTasker" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <link rel="icon" href="/icon.png" type="image/png">
+    <script>
+      (function(){
+        var t=localStorage.getItem('nt-theme')||'auto';
+        var d=t==='dark'||(t==='auto'&&window.matchMedia('(prefers-color-scheme:dark)').matches);
+        if(d)document.documentElement.classList.add('dark');
+      })();
+    </script>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload", preload_links_header: false %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="h-full flex bg-gray-50">
+
+    <%# Sidebar %>
+    <aside class="fixed inset-y-0 left-0 w-56 bg-slate-900 flex flex-col z-40 shadow-xl">
+
+      <%# Logo %>
+      <div class="px-5 py-4 border-b border-slate-700/60">
+        <%= link_to root_path, class: "flex items-center gap-3 group" do %>
+          <img src="/icon.png" alt="" class="w-8 h-8 rounded-lg">
+          <div>
+            <div class="text-white font-bold text-sm leading-tight">NiceTasker</div>
+            <div class="text-indigo-400 text-[11px] font-semibold tracking-widest uppercase leading-tight">Portal</div>
+          </div>
+        <% end %>
+      </div>
+
+      <%# Navigation %>
+      <nav class="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+        <%= portal_nav_link t("portal.nav.dashboard"), portal_root_path,
+              icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>' %>
+        <%= portal_nav_link t("portal.nav.users"), portal_users_path,
+              icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>' %>
+        <%= portal_nav_link t("portal.nav.workspaces"), portal_workspaces_path,
+              icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>' %>
+        <%= portal_nav_link t("portal.nav.boards"), portal_boards_path,
+              icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/>' %>
+        <%= portal_nav_link t("portal.nav.cards"), portal_cards_path,
+              icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>' %>
+      </nav>
+
+      <%# Bottom: user + back to app %>
+      <div class="px-4 py-4 border-t border-slate-700/60 space-y-3">
+        <div class="flex items-center gap-2.5">
+          <% if current_user.avatar.attached? %>
+            <img src="<%= url_for(current_user.avatar) %>" class="w-7 h-7 rounded-full object-cover shrink-0">
+          <% elsif current_user.avatar_url.present? %>
+            <img src="<%= current_user.avatar_url %>" class="w-7 h-7 rounded-full object-cover shrink-0">
+          <% else %>
+            <div class="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center text-xs font-bold text-white shrink-0">
+              <%= current_user.initials %>
+            </div>
+          <% end %>
+          <div class="min-w-0">
+            <div class="text-white text-xs font-medium truncate"><%= current_user.display_name %></div>
+            <div class="text-indigo-400 text-[10px] font-semibold">Super Admin</div>
+          </div>
+        </div>
+        <%= link_to root_path, class: "flex items-center gap-2 text-slate-400 hover:text-white text-xs transition-colors" do %>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+          <%= t("portal.nav.back_to_app") %>
+        <% end %>
+      </div>
+    </aside>
+
+    <%# Main content %>
+    <div class="ml-56 flex-1 min-h-screen flex flex-col">
+
+      <%# Flash messages %>
+      <% if notice.present? || alert.present? %>
+        <div class="px-8 pt-4">
+          <% if notice.present? %>
+            <div class="flex items-center gap-2 rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-800" data-controller="flash">
+              <svg class="w-4 h-4 shrink-0 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <%= notice %>
+              <button class="ml-auto text-green-600 hover:text-green-800" data-action="flash#dismiss">✕</button>
+            </div>
+          <% end %>
+          <% if alert.present? %>
+            <div class="flex items-center gap-2 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-800" data-controller="flash">
+              <svg class="w-4 h-4 shrink-0 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 3a9 9 0 100 18A9 9 0 0012 3z"/></svg>
+              <%= alert %>
+              <button class="ml-auto text-red-600 hover:text-red-800" data-action="flash#dismiss">✕</button>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+
+      <main class="flex-1 px-8 py-6">
+        <%= yield %>
+      </main>
+    </div>
+
+    <%# Confirm dialog %>
+    <dialog id="confirm_dialog"
+            class="backdrop:bg-black/50 backdrop:backdrop-blur-sm rounded-2xl shadow-2xl shadow-gray-900/20 border-0 p-0 max-w-sm w-full mx-auto">
+      <div class="bg-white rounded-2xl p-6">
+        <p id="confirm_dialog_message" class="text-sm text-gray-700 mb-5 leading-relaxed"></p>
+        <div class="flex justify-end gap-3">
+          <button id="confirm_dialog_cancel" class="px-4 py-2 text-sm text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors">
+            <%= t("common.cancel") %>
+          </button>
+          <button id="confirm_dialog_ok" class="px-4 py-2 text-sm text-white bg-red-600 hover:bg-red-700 rounded-lg font-medium transition-colors">
+            <%= t("common.confirm") %>
+          </button>
+        </div>
+      </div>
+    </dialog>
+  </body>
+</html>
