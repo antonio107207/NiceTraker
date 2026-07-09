@@ -1,6 +1,6 @@
 namespace :portal do
   desc "Promote a user to super admin. Usage: rake portal:create_super_admin[email@example.com]"
-  task :create_super_admin, [:email] => :environment do |_, args|
+  task :create_super_admin, [ :email ] => :environment do |_, args|
     email = args[:email] || ENV["EMAIL"]
     abort "Usage: rake portal:create_super_admin[email@example.com]" if email.blank?
 
@@ -17,7 +17,7 @@ namespace :portal do
   end
 
   desc "Revoke super admin from a user. Usage: rake portal:revoke_super_admin[email@example.com]"
-  task :revoke_super_admin, [:email] => :environment do |_, args|
+  task :revoke_super_admin, [ :email ] => :environment do |_, args|
     email = args[:email] || ENV["EMAIL"]
     abort "Usage: rake portal:revoke_super_admin[email@example.com]" if email.blank?
 

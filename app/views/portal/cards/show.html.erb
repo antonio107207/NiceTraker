@@ -43,7 +43,7 @@
 
         <% if @card.description.present? %>
           <div class="mt-4 pt-4 border-t border-gray-100 prose prose-sm max-w-none text-gray-600">
-            <%= @card.description.html_safe %>
+            <%= @card.description %>
           </div>
         <% end %>
       </div>
@@ -63,7 +63,7 @@
                   <span class="text-sm font-medium text-gray-800"><%= comment.user.display_name %></span>
                   <span class="text-xs text-gray-400"><%= comment.created_at.strftime("%d %b %Y %H:%M") %></span>
                 </div>
-                <div class="text-sm text-gray-600"><%= comment.body.html_safe %></div>
+                <div class="text-sm text-gray-600"><%= simple_format(comment.body) %></div>
               </div>
             <% end %>
           <% end %>
