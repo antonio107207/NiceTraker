@@ -8,7 +8,7 @@
      data-controller="board-filter">
 
   <%# Board header + filter bar — single backdrop so no seam appears %>
-  <div class="bg-black/35 backdrop-blur-sm text-white">
+  <div class="relative z-10 bg-black/35 backdrop-blur-sm text-white">
   <div class="flex items-center justify-between px-4 py-2">
     <div class="flex items-center gap-2 flex-1 min-w-0 mr-2">
       <h1 class="text-base sm:text-xl font-bold truncate"><%= @board.name %></h1>
