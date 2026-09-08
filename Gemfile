@@ -28,7 +28,7 @@ gem "acts_as_list"
 gem "pg_search"
 
 # Rich text attachments
-gem "image_processing", "~> 2.0"
+gem "image_processing", "~> 2.1"
 
 # Rails 8 built-in backends
 gem "solid_cache"
